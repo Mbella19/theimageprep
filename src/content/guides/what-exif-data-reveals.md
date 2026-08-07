@@ -3,6 +3,7 @@ title: 'What EXIF Data Reveals About Your Photos'
 description: 'Your photos record where they were taken, when, on which camera, and sometimes a copy of the pre-crop image. Here is what is in there.'
 h1: 'What EXIF Data Reveals About Your Photos'
 blurb: 'Every photo carries a block of hidden information. Some of it is harmless, some of it is your home address, and almost nobody has looked.'
+kicker: 'Privacy'
 published: '2026-08-07'
 relatedTools:
   - remove-exif-data

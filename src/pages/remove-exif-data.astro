@@ -4,9 +4,19 @@ import RemoveExif from '../tools/RemoveExif';
 import { getTool } from '../data/tools';
 
 const tool = getTool('remove-exif-data');
+
+/* Headings this page adds through the `content` slot. The layout cannot
+   see inside a slot, so the rail's table of contents is declared here or
+   it silently goes out of date. */
+const extraToc = [
+  { id: "what-is-exif", label: "What your photos are actually carrying" },
+  { id: "lossless", label: "Why this does not reduce your image quality" },
+  { id: "platforms", label: "Do social networks strip this for you?" },
+  { id: "not-covered", label: "What removing metadata does not do" },
+];
 ---
 
-<ToolPage tool={tool}>
+<ToolPage extraToc={extraToc} tool={tool}>
   <RemoveExif slot="tool" client:load />
 
   <Fragment slot="content">
@@ -95,7 +105,7 @@ const tool = getTool('remove-exif-data');
     </section>
 
     <section class="section">
-      <h2 id="limits">What removing metadata does not do</h2>
+      <h2 id="not-covered">What removing metadata does not do</h2>
       <p>
         It is worth being clear about the boundary, because "removing EXIF" is sometimes treated
         as anonymity, and it is not.

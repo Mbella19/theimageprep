@@ -11,12 +11,31 @@ export interface Props {
   h1: string;
   blurb: string;
   slug: string;
+  kicker?: string;
+  sourceNote?: string;
   published: string;
   updated?: string;
   relatedTools: string[];
+  /** Rough word count of the rendered body, for the reading-time estimate. */
+  words?: number;
+  /** Top-level headings, taken from Astro's own render() output. */
+  toc?: { id: string; label: string }[];
 }
 
-const { title, description, h1, blurb, slug, published, updated, relatedTools } = Astro.props;
+const {
+  title,
+  description,
+  h1,
+  blurb,
+  slug,
+  kicker = 'Guide',
+  sourceNote,
+  published,
+  updated,
+  relatedTools,
+  words,
+  toc = [],
+} = Astro.props;
 const path = `/guides/${slug}/`;
 
 const crumbs: Crumb[] = [
@@ -26,6 +45,24 @@ const crumbs: Crumb[] = [
 ];
 
 const tools = relatedTools.map(getTool);
+
+/*
+  Reading time is computed from the actual body, never hand-written in
+  frontmatter — a number an author has to remember to update is a number that
+  is wrong within a month. 200 wpm is the usual figure for online prose.
+*/
+const minutes = words ? Math.max(1, Math.round(words / 200)) : null;
+
+const shownDate = updated && updated !== published ? updated : published;
+const dateLabel = updated && updated !== published ? 'Updated' : 'Published';
+
+/** "2026-08-07" → "7 August 2026". Rendered at build time, so no client cost. */
+const prettyDate = new Date(`${shownDate}T00:00:00Z`).toLocaleDateString('en-GB', {
+  day: 'numeric',
+  month: 'long',
+  year: 'numeric',
+  timeZone: 'UTC',
+});
 ---
 
 <Base
@@ -40,46 +77,95 @@ const tools = relatedTools.map(getTool);
     breadcrumbSchema(crumbs),
   ]}
 >
-  <div class="container-narrow" style="padding-inline: 0">
-    <Breadcrumbs crumbs={crumbs} />
+  <Breadcrumbs crumbs={crumbs} />
 
-    <header class="page-head">
-      <p class="eyebrow">Guide</p>
-      <h1>{h1}</h1>
-      <p class="page-head__blurb">{blurb}</p>
-      <p class="text-sm text-muted" style="margin-top: var(--space-4)">
-        {
-          updated && updated !== published ? (
-            <>Updated <time datetime={updated}>{updated}</time></>
-          ) : (
-            <>Published <time datetime={published}>{published}</time></>
-          )
-        }
-      </p>
-    </header>
+  <div class="with-rail" style="margin-top: 0">
+    <article class="with-rail__main">
+      <header class="page-head">
+        <p class="eyebrow">{kicker === 'Guide' ? 'Guide' : `Guide · ${kicker}`}</p>
+        <h1 style="max-width: 22ch">{h1}</h1>
+        <p class="page-head__blurb">{blurb}</p>
 
-    <div class="prose">
-      <slot />
-    </div>
+        {/*
+          Stating the date, the length and where the numbers came from, in the
+          open. Platform specs go stale constantly and almost no competitor
+          says when they last checked — being the one that does is cheap, and
+          it is exactly the kind of detail that earns a link.
+        */}
+        <p class="byline">
+          <span>{dateLabel} <time datetime={shownDate}>{prettyDate}</time></span>
+          {minutes && <span>· {minutes} min read</span>}
+          {sourceNote && <span>· {sourceNote}</span>}
+        </p>
+      </header>
 
-    <AdSlot placement="inArticle" />
+      <div class="prose">
+        <slot />
+      </div>
 
-    {
-      tools.length > 0 && (
-        <section class="related">
-          <h2>Tools mentioned in this guide</h2>
-          <ul class="tool-grid">
-            {tools.map((tool) => (
-              <li>
-                <a class="tool-card" href={`/${tool.slug}/`}>
-                  <span class="tool-card__name">{tool.name}</span>
-                  <span class="tool-card__desc">{tool.blurb.split('.')[0]}.</span>
-                </a>
-              </li>
-            ))}
-          </ul>
-        </section>
-      )
-    }
+      <AdSlot placement="inArticle" />
+
+      {
+        tools.length > 0 && (
+          <section class="related">
+            <h2>Tools this guide refers to</h2>
+            <ul class="tool-grid">
+              {tools.map((tool) => (
+                <li>
+                  <a class="tool-card" href={`/${tool.slug}/`}>
+                    <span class="tool-card__name">{tool.name}</span>
+                    <span class="tool-card__desc">{tool.blurb.split('.')[0]}.</span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </section>
+        )
+      }
+    </article>
+
+    <aside class="rail" aria-label="Contents and related tools">
+      {
+        toc.length > 2 && (
+          <nav class="rail-card">
+            <p class="rail-card__head">Contents</p>
+            <ul>
+              {toc.map((item) => (
+                <li>
+                  <a href={`#${item.id}`}>{item.label}</a>
+                </li>
+              ))}
+            </ul>
+          </nav>
+        )
+      }
+
+      {
+        tools.length > 0 && (
+          <div class="rail-card rail-card--ink">
+            <p class="rail-card__head">Tools in this guide</p>
+            <ul>
+              {tools.map((tool) => (
+                <li>
+                  <a href={`/${tool.slug}/`}>{tool.name}</a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )
+      }
+
+      <div class="rail-card">
+        <p class="rail-card__head">More guides</p>
+        <ul>
+          <li><a href="/guides/">All guides</a></li>
+          <li><a href="/">Every tool</a></li>
+        </ul>
+      </div>
+
+      <AdSlot placement="inArticle" variant="halfpage" class="rail__desktop-only" />
+    </aside>
   </div>
+
+  <AdSlot placement="belowContent" variant="leaderboard" />
 </Base>

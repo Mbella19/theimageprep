@@ -13,6 +13,8 @@ const { category } = Astro.props;
 const tools = toolsInCategory(category.id);
 const path = `/${category.slug}/`;
 const otherCategories = CATEGORIES.filter((c) => c.id !== category.id);
+const position = CATEGORIES.findIndex((c) => c.id === category.id) + 1;
+const pad = (n: number) => String(n).padStart(2, '0');
 
 const crumbs: Crumb[] = [
   { name: 'Home', path: '/' },
@@ -40,17 +42,29 @@ const schema = [
   <Breadcrumbs crumbs={crumbs} />
 
   <header class="page-head">
+    <p class="eyebrow">Category · {pad(position)} of {pad(CATEGORIES.length)}</p>
     <h1>{category.h1}</h1>
     <p class="page-head__blurb">{category.blurb}</p>
   </header>
 
-  <ul class="tool-grid">
+  {/*
+    Hub cards are taller than the ones on the homepage and carry a spec list.
+    A category page is where someone is choosing BETWEEN tools, so the useful
+    thing to show is what separates them, not another one-line summary.
+  */}
+  <ul class="hub-grid">
     {
       tools.map((tool) => (
         <li>
-          <a class="tool-card" href={`/${tool.slug}/`}>
-            <span class="tool-card__name">{tool.name}</span>
-            <span class="tool-card__desc">{tool.blurb.split('.')[0]}.</span>
+          <a class="hub-card" href={`/${tool.slug}/`}>
+            <span class="hub-card__tag">{tool.name}</span>
+            <span class="hub-card__name">{tool.h1}</span>
+            <span class="hub-card__desc">{tool.blurb}</span>
+            <ul class="hub-card__specs">
+              {tool.limits.slice(0, 2).map((limit) => (
+                <li>{limit.split('.')[0]}.</li>
+              ))}
+            </ul>
           </a>
         </li>
       ))

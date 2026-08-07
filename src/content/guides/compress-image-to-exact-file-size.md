@@ -3,6 +3,7 @@ title: 'How to Compress an Image to an Exact File Size'
 description: 'Getting a photo under 100KB, 500KB or 2MB without guessing at a quality slider — and what to do when the target is unreachable.'
 h1: 'How to Compress an Image to an Exact File Size'
 blurb: 'Upload limits are stated in megabytes, not quality units. Here is how to hit a specific number, and what to do when compression alone cannot get you there.'
+kicker: 'Sizes'
 published: '2026-08-07'
 relatedTools:
   - compress-jpg

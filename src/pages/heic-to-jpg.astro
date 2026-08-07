@@ -4,9 +4,20 @@ import ConvertImage from '../tools/ConvertImage';
 import { getTool } from '../data/tools';
 
 const tool = getTool('heic-to-jpg');
+
+/* Headings this page adds through the `content` slot. The layout cannot
+   see inside a slot, so the rail's table of contents is declared here or
+   it silently goes out of date. */
+const extraToc = [
+  { id: "what-is-heic", label: "Why your iPhone makes files nothing can open" },
+  { id: "how-it-works", label: "How this converts without uploading anything" },
+  { id: "orientation", label: "Your photos will not come out sideways" },
+  { id: "privacy", label: "What happens to the location data" },
+  { id: "stop-heic", label: "How to stop your iPhone making HEIC files" },
+];
 ---
 
-<ToolPage tool={tool}>
+<ToolPage extraToc={extraToc} tool={tool}>
   <ConvertImage
     slot="tool"
     to="jpeg"

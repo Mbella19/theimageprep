@@ -4,9 +4,19 @@ import FaviconGenerator from '../tools/FaviconGenerator';
 import { getTool } from '../data/tools';
 
 const tool = getTool('favicon-generator');
+
+/* Headings this page adds through the `content` slot. The layout cannot
+   see inside a slot, so the rail's table of contents is declared here or
+   it silently goes out of date. */
+const extraToc = [
+  { id: "what-you-need", label: "What a modern site actually needs" },
+  { id: "install", label: "Installing the files" },
+  { id: "design", label: "Designing something that survives 16 pixels" },
+  { id: "svg", label: "Should you use an SVG favicon?" },
+];
 ---
 
-<ToolPage tool={tool}>
+<ToolPage extraToc={extraToc} tool={tool}>
   <FaviconGenerator slot="tool" client:load />
 
   <Fragment slot="content">

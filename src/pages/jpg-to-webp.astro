@@ -4,9 +4,19 @@ import ConvertImage from '../tools/ConvertImage';
 import { getTool } from '../data/tools';
 
 const tool = getTool('jpg-to-webp');
+
+/* Headings this page adds through the `content` slot. The layout cannot
+   see inside a slot, so the rail's table of contents is declared here or
+   it silently goes out of date. */
+const extraToc = [
+  { id: "why", label: "Why WebP is smaller" },
+  { id: "generation-loss", label: "You are converting lossy to lossy" },
+  { id: "serving", label: "Serving WebP properly on a website" },
+  { id: "seo", label: "Does converting to WebP help SEO?" },
+];
 ---
 
-<ToolPage tool={tool}>
+<ToolPage extraToc={extraToc} tool={tool}>
   <ConvertImage
     slot="tool"
     to="webp"

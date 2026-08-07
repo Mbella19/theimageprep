@@ -4,9 +4,20 @@ import ChangeDpi from '../tools/ChangeDpi';
 import { getTool } from '../data/tools';
 
 const tool = getTool('change-image-dpi');
+
+/* Headings this page adds through the `content` slot. The layout cannot
+   see inside a slot, so the rail's table of contents is declared here or
+   it silently goes out of date. */
+const extraToc = [
+  { id: "what-dpi-is", label: "DPI is a label, not a quality setting" },
+  { id: "why-it-fails", label: "Why DPI changes made elsewhere often do nothing" },
+  { id: "how-many-pixels", label: "How many pixels do you actually need?" },
+  { id: "modes", label: "Label only, or resample?" },
+  { id: "dpi-vs-ppi", label: "DPI and PPI" },
+];
 ---
 
-<ToolPage tool={tool}>
+<ToolPage extraToc={extraToc} tool={tool}>
   <ChangeDpi slot="tool" client:load />
 
   <Fragment slot="content">

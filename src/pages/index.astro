@@ -1,14 +1,91 @@
 ---
 import Base from '../layouts/Base.astro';
 import AdSlot from '../components/AdSlot.astro';
+import UniversalDrop from '../tools/UniversalDrop.tsx';
 import { SITE } from '../config';
 import { CATEGORIES, TOOLS, toolsInCategory } from '../data/tools';
 import { organizationSchema, websiteSchema } from '../lib/schema';
 import { getCollection } from 'astro:content';
 
-const guides = (await getCollection('guides')).sort(
-  (a, b) => a.data.order - b.data.order,
-);
+const guides = (await getCollection('guides')).sort((a, b) => a.data.order - b.data.order);
+
+/*
+  Five plain-language problems, each pointing at the tool that solves it.
+  Someone arriving mid-task thinks "my file is too big", not "I require a
+  MozJPEG re-encode" — these are the words they would use themselves.
+*/
+const heroChips = [
+  { label: 'My file is too big', href: '/compress-jpg/' },
+  { label: 'Wrong format', href: '/convert/' },
+  { label: 'Wrong dimensions', href: '/resize-image/' },
+  { label: 'Remove location data', href: '/remove-exif-data/' },
+  { label: 'Make a favicon', href: '/favicon-generator/' },
+];
+
+/* Every claim here is specific and checkable. Vague reassurance is worthless
+   on a page asking people to hand over private photos. */
+const proof = [
+  { n: '0 bytes', t: 'uploaded to any server. There is no upload endpoint to send a file to.' },
+  { n: '≤ 8 tries', t: 'to land under a file-size limit you type in megabytes.' },
+  { n: 'Pixel-identical', t: 'metadata edits — EXIF and DPI never re-encode the picture.' },
+  { n: 'Right way up', t: 'every time. Phone orientation tags are read on every decode.' },
+];
+
+/*
+  Three routes into the same fourteen tools, arranged by who you are rather
+  than by what the software does. This is the seller/creator positioning made
+  navigable, and it adds internal links to the pages that need them most.
+*/
+const lanes = [
+  {
+    kicker: 'Etsy · Amazon · eBay',
+    title: 'You sell things online',
+    body: 'Marketplaces reject listings over a size cap and upscale anything under their minimum. Hit the number exactly.',
+    links: [
+      { label: 'Resize to 2000×2000 for Etsy', href: '/resize-image/', meta: 'TOOL' },
+      { label: 'Amazon product image rules', href: '/guides/amazon-product-image-requirements/', meta: 'GUIDE' },
+      { label: 'Compress under 1 MB', href: '/compress-jpg/', meta: 'TOOL' },
+      { label: 'Add a watermark in batch', href: '/add-watermark/', meta: 'TOOL' },
+    ],
+  },
+  {
+    kicker: 'YouTube · TikTok · Instagram',
+    title: 'You make content',
+    body: 'Thumbnails have a hard 2 MB ceiling on mobile uploads, and a safe area most templates ignore.',
+    links: [
+      { label: 'Compress a thumbnail under 2 MB', href: '/compress-jpg/', meta: 'TOOL' },
+      { label: 'YouTube thumbnail size', href: '/guides/youtube-thumbnail-size/', meta: 'GUIDE' },
+      { label: 'Export to 30+ social sizes', href: '/social-media-image-sizes/', meta: 'TOOL' },
+      { label: 'Circular profile picture', href: '/profile-picture-maker/', meta: 'TOOL' },
+    ],
+  },
+  {
+    kicker: 'Developers · Designers',
+    title: 'You ship websites',
+    body: 'Lighthouse complains, the PNG is 4 MB, and the favicon set is eight files nobody wants to make by hand.',
+    links: [
+      { label: 'Generate a real favicon.ico', href: '/favicon-generator/', meta: 'TOOL' },
+      { label: 'JPG vs PNG vs WebP', href: '/guides/jpg-vs-png-vs-webp/', meta: 'GUIDE' },
+      { label: 'Convert JPG to WebP', href: '/jpg-to-webp/', meta: 'TOOL' },
+      { label: 'Strip EXIF before deploy', href: '/remove-exif-data/', meta: 'TOOL' },
+    ],
+  },
+];
+
+const privacyPoints = [
+  {
+    t: 'No upload endpoint',
+    d: 'The site is static files. There is no server route that accepts an image.',
+  },
+  {
+    t: 'No account, ever',
+    d: 'Nothing to register, nothing to verify, no email captured.',
+  },
+  {
+    t: 'Ads never touch your files',
+    d: 'Ad frames are sandboxed and sit below the content, never beside the controls.',
+  },
+];
 ---
 
 <Base
@@ -17,116 +94,177 @@ const guides = (await getCollection('guides')).sort(
   path="/"
   schema={[websiteSchema(), organizationSchema()]}
 >
-  <header class="page-head" style="max-width: 46ch">
-    <h1>Image tools that never upload your files</h1>
-    <p class="page-head__blurb">
-      {TOOLS.length} free tools for compressing, converting, resizing and cleaning up images for Etsy,
-      Amazon, YouTube and Instagram. Everything runs inside your browser — no upload, no account,
-      no queue.
-    </p>
-  </header>
+  <div class="hero">
+    <div class="hero__text">
+      <p class="eyebrow">{TOOLS.length} tools · 0 uploads · no account</p>
+      <h1>Fix an image in ten seconds. Nothing leaves your device.</h1>
+      <p class="hero__blurb">
+        Compress, convert, resize and clean up photos for Etsy, Amazon, YouTube and Instagram.
+        Everything runs inside this browser tab — there is no upload, no queue and nothing to
+        delete afterwards.
+      </p>
+      <ul class="hero__chips">
+        {
+          heroChips.map((chip) => (
+            <li>
+              <a class="chip" href={chip.href}>
+                {chip.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
 
-  <div class="home-points">
-    <div class="home-point">
-      <h2>Nothing leaves your device</h2>
-      <p>
-        Processing happens in your browser using WebAssembly. Load a tool, turn off your internet
-        connection, and it still works — which is the only proof of a privacy claim worth having.
-      </p>
-    </div>
-    <div class="home-point">
-      <h2>Aim at a file size, not a slider</h2>
-      <p>
-        Real limits are stated in megabytes. Type "under 2 MB" and the compressors search for the
-        highest quality that fits, instead of leaving you to guess and re-check.
-      </p>
-    </div>
-    <div class="home-point">
-      <h2>Metadata edits stay lossless</h2>
-      <p>
-        Removing EXIF or changing DPI rewrites a few bytes of the container and never re-encodes
-        the picture. The pixels that come out are identical to the ones that went in.
-      </p>
-    </div>
-    <div class="home-point">
-      <h2>Photos stay the right way up</h2>
-      <p>
-        Phone cameras store orientation as a tag rather than rotating pixels. Every tool here
-        reads it, so nothing comes back sideways.
-      </p>
+    <div class="hero__aside">
+      {/*
+        Hydrates on load rather than on idle: this is the primary action on
+        the page, and a dropzone that ignores the first file dropped on it is
+        worse than one that took a moment to appear.
+      */}
+      <UniversalDrop client:load />
+      <noscript>
+        <p class="udrop__noscript">
+          This dropzone needs JavaScript. Every tool is still reachable from the list below.
+        </p>
+      </noscript>
     </div>
   </div>
 
-  {
-    CATEGORIES.map((category) => (
-      <section class="section section--wide" style="margin-top: var(--space-8)">
-        <h2 id={category.slug}>
-          <a href={`/${category.slug}/`} style="text-decoration: none; color: inherit">
-            {category.name}
-          </a>
-        </h2>
-        <p class="text-muted" style="margin-bottom: var(--space-5); max-width: var(--measure)">
-          {category.blurb}
-        </p>
-        <ul class="tool-grid">
-          {toolsInCategory(category.id).map((tool) => (
-            <li>
-              <a class="tool-card" href={`/${tool.slug}/`}>
-                <span class="tool-card__name">{tool.name}</span>
-                <span class="tool-card__desc">{tool.blurb.split('.')[0]}.</span>
-              </a>
-            </li>
-          ))}
-        </ul>
-      </section>
-    ))
-  }
+  <ul class="proof band-inset">
+    {
+      proof.map((item) => (
+        <li>
+          <span class="proof__n">{item.n}</span>
+          <span class="proof__t">{item.t}</span>
+        </li>
+      ))
+    }
+  </ul>
+
+  <section class="section section--wide" style="margin-top: var(--space-8)">
+    <div class="section-head">
+      <h2>Every tool</h2>
+      <span class="section-head__meta">Free · no sign-up · runs offline</span>
+    </div>
+
+    {
+      CATEGORIES.map((category, index) => (
+        <div class="cat-block">
+          <div class="cat-block__head">
+            <span class="cat-block__num">{String(index + 1).padStart(2, '0')}</span>
+            <a class="cat-block__name" href={`/${category.slug}/`} id={category.slug}>
+              {category.name}
+            </a>
+            <span class="cat-block__blurb">{category.blurb}</span>
+          </div>
+          <ul class="tool-grid">
+            {toolsInCategory(category.id).map((tool) => (
+              <li>
+                <a class="tool-card" href={`/${tool.slug}/`}>
+                  <span class="tool-card__name">{tool.name}</span>
+                  <span class="tool-card__desc">{tool.blurb.split('.')[0]}.</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))
+    }
+  </section>
 
   <AdSlot placement="belowContent" variant="leaderboard" />
 
+  <section class="section section--wide">
+    <h2 class="rule-top">Start from what you sell, shoot or ship</h2>
+    <p class="lede" style="margin: var(--space-2) 0 var(--space-6)">
+      Three short routes into the same {TOOLS.length} tools, arranged by the problem you actually
+      have.
+    </p>
+    <ul class="lanes">
+      {
+        lanes.map((lane) => (
+          <li class="lane">
+            <p class="eyebrow" style="margin-bottom: 0">
+              {lane.kicker}
+            </p>
+            <h3>{lane.title}</h3>
+            <p class="lane__body">{lane.body}</p>
+            <ul class="lane__links">
+              {lane.links.map((link) => (
+                <li>
+                  <a href={link.href}>
+                    <span>{link.label}</span>
+                    <span class="lane__meta">{link.meta}</span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+
   {
     guides.length > 0 && (
-      <section class="section section--wide" style="margin-top: var(--space-9)">
-        <h2>Guides</h2>
-        <p class="text-muted" style="margin-bottom: var(--space-5); max-width: var(--measure)">
-          What each platform actually asks for, and why images get rejected.
-        </p>
-        <ul class="tool-grid">
+      <section class="section section--wide">
+        <div class="section-head">
+          <h2>Guides</h2>
+          <a href="/guides/" style="font-size: 14px; font-weight: 500">
+            All {guides.length} guides
+          </a>
+        </div>
+        <ul class="guide-grid">
           {guides.slice(0, 6).map((guide) => (
             <li>
-              <a class="tool-card" href={`/guides/${guide.id}/`}>
-                <span class="tool-card__name">{guide.data.h1}</span>
-                <span class="tool-card__desc">{guide.data.blurb}</span>
+              <a class="guide-card" href={`/guides/${guide.id}/`}>
+                <span class="guide-card__kicker">{guide.data.kicker ?? 'Guide'}</span>
+                <span class="guide-card__title">{guide.data.h1}</span>
+                <span class="guide-card__blurb">{guide.data.blurb}</span>
               </a>
             </li>
           ))}
         </ul>
-        <p style="margin-top: var(--space-5)">
-          <a href="/guides/">All guides</a>
-        </p>
       </section>
     )
   }
+
+  {/*
+    Runs edge to edge, so it goes in Base's "bleed" slot — outside the
+    container, still inside <main>.
+  */}
+  <section class="privacy-band" slot="bleed">
+    <div class="container privacy-band__inner">
+      <div style="flex: 1 1 380px; min-width: 0">
+        <h2>A privacy claim you can test in five seconds</h2>
+        <p>
+          Open any tool, turn off your wi-fi, and it still works. That is only possible because
+          the processing happens in your browser with WebAssembly. There is no upload endpoint on
+          this site to send a file to.
+        </p>
+      </div>
+      <ul class="privacy-band__points">
+        {
+          privacyPoints.map((point) => (
+            <li class="privacy-band__point">
+              <b>{point.t}</b>
+              <span>{point.d}</span>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
 </Base>
 
 <style>
-  .home-points {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-    gap: var(--space-5);
-    padding: var(--space-6) 0;
+  /* The proof strip is a full-bleed inset band. Negative margin escapes the
+     container, and the padding puts the text back on the grid. */
+  .band-inset {
+    margin-inline: calc(50% - 50vw);
+    padding-inline: max(var(--space-4), calc(50vw - var(--container) / 2 + 16px));
+    background: var(--bg-subtle);
     border-block: 1px solid var(--border);
-  }
-
-  .home-point h2 {
-    font-size: var(--step-0);
-    font-weight: 650;
-    margin-bottom: var(--space-2);
-  }
-
-  .home-point p {
-    font-size: var(--step--1);
-    color: var(--text-muted);
-    line-height: 1.6;
   }
 </style>

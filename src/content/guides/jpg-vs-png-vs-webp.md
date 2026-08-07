@@ -3,6 +3,7 @@ title: 'JPG vs PNG vs WebP: Which to Use and When'
 description: 'A decision you can make in ten seconds once you know the rule. Plus why a photograph saved as PNG costs you ten times the file size.'
 h1: 'JPG vs PNG vs WebP'
 blurb: 'One rule decides it almost every time. Here is the rule, the exceptions, and what each format is actually doing to your image.'
+kicker: 'Formats'
 published: '2026-08-07'
 relatedTools:
   - png-to-jpg

@@ -42,8 +42,50 @@ npm run assets       # regenerates favicons and Open Graph cards
 | **8 guides** | Etsy, Amazon, eBay, YouTube, Instagram, EXIF, 300 DPI, format choice |
 | **Support pages** | about, contact, privacy policy, terms, 404 |
 | **35 pages total** | all statically generated, all in the sitemap |
+| **Design** | warm paper, hairline rules, two self-hosted variable fonts |
 
 ---
+
+## The design
+
+Warm paper (`#f2f0ec`), white content surfaces, hairline borders, and one
+full-strength ink rule under each section heading. Colour appears almost
+nowhere, which is what makes the few places it does appear — a savings badge,
+the privacy dot — actually register.
+
+Two self-hosted variable fonts: **Instrument Sans** for reading, **JetBrains
+Mono** for numbers, tags and table headers. Mono is doing real work: this is a
+tool whose output is measurements (`4.2 MB → 1.31 MB · 4032 x 3024`) and
+tabular figures keep them aligned and scannable mid-task.
+
+> **The fonts are self-hosted deliberately.** Hotlinking Google would hand
+> every visitor's IP to a third party before the page paints — on a site whose
+> entire claim is that nothing leaves your device. It is also faster: no extra
+> DNS lookup or TLS handshake, and the files sit behind the same one-year
+> immutable cache as everything else. Both are in
+> [`public/fonts/`](public/fonts/) at ~30 KB each.
+
+Dark mode is not in the source design, which is light-only. Rather than invent
+a palette, it is derived from the design's own dark band — the homepage privacy
+section — which already establishes what the brand looks like inverted.
+
+## The homepage dropzone routes by magic bytes
+
+Drop anything on the homepage and it works out which tool you need, then sends
+you there with the file already loaded. A HEIC goes to the converter (nobody
+opens a HEIC because it is too big); a JPEG goes to the compressor.
+
+The format is read from the file's own header, never its name or its reported
+MIME type — both lie constantly. macOS and Windows hand over an empty type for
+`.heic`, and a file called `.jpg` is frequently a PNG. `tests/fixtures/
+mislabelled.jpg` is PNG bytes wearing a `.jpg` extension, and
+`npm run verify:handoff` asserts it lands on the **PNG** compressor.
+
+The file crosses the navigation through IndexedDB
+([`src/lib/handoff.ts`](src/lib/handoff.ts)), not sessionStorage — which only
+holds strings, so a 4 MB photo would need base64 encoding into ~5.5 MB. The
+read is destructive and expires after 60 seconds, so a file dropped earlier can
+never silently reappear in a later tool.
 
 ## The three things this does better than the competition
 
@@ -150,9 +192,9 @@ for months, which is exactly what happens to sites like this one.
 
 ## Testing
 
-Three tiers, each catching what the one below cannot. `npm run verify:all` runs them all.
+Four tiers, each catching what the one below cannot. `npm run verify:all` runs them all.
 
-**`npm test`** — 73 unit tests over the pure logic: container surgery, the quantiser,
+**`npm test`** — 78 unit tests over the pure logic: container surgery, the quantiser,
 the ICO writer, the target-size search, orientation transforms and path handling. The
 important ones prove the lossless claims by decoding with `sharp` and comparing raw
 pixel buffers.
@@ -172,6 +214,12 @@ present. It captures the actual downloaded files and inspects the bytes:
 - the circle mask has **transparent corners, an opaque centre and a feathered rim**
 - every file in the social-sizes ZIP matches the dimensions in its own filename
 - flattening puts the chosen background colour in a formerly transparent corner
+
+**`npm run verify:handoff`** — 21 checks on the homepage dropzone: that each
+format routes to the right tool, that the file genuinely arrives and is
+processed, that the `?from=drop` marker is stripped so a refresh cannot
+re-consume a taken file, and that a stale handoff is never picked up by a tool
+opened later.
 
 ### Three real bugs this tier caught
 

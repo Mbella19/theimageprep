@@ -3,6 +3,8 @@ title: 'eBay Photo Requirements and Best Sizes'
 description: 'eBay needs 500px minimum, but 1600px unlocks the zoom viewer. Here is what to upload and which policies get listings blocked.'
 h1: 'eBay Photo Requirements'
 blurb: 'The minimum eBay accepts, the size that actually unlocks zoom, and the two policies that block listings outright.'
+kicker: 'eBay'
+sourceNote: 'Checked against eBay Seller Centre'
 published: '2026-08-07'
 relatedTools:
   - resize-image

@@ -3,6 +3,8 @@ title: 'YouTube Thumbnail Size: The Advice You Read Is Old'
 description: 'YouTube now recommends 3840x2160, not 1280x720. And the famous 2MB limit only applies to mobile uploads — desktop allows 50MB.'
 h1: 'YouTube Thumbnail Size and the 2MB Limit'
 blurb: 'Almost every guide online repeats numbers YouTube has moved on from. Here are the current specifications, and why the 2MB wall only affects some people.'
+kicker: 'YouTube'
+sourceNote: 'Checked against YouTube Help'
 published: '2026-08-07'
 relatedTools:
   - compress-jpg

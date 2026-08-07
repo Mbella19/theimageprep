@@ -29,11 +29,19 @@ export interface Props {
   /** Named `placement`, not `slot` — `slot` is reserved by Astro for content
    *  projection and would be swallowed as a slot assignment. */
   placement: keyof typeof SITE.adsense.slots;
-  variant?: 'rectangle' | 'leaderboard';
+  variant?: 'rectangle' | 'leaderboard' | 'halfpage';
   format?: string;
+  /** Extra classes, e.g. `rail__desktop-only` to hide the unit under 1100px. */
+  class?: string;
 }
 
-const { placement, variant = 'rectangle', format = 'auto' } = Astro.props;
+const { placement, variant = 'rectangle', format = 'auto', class: extra = '' } = Astro.props;
+
+const VARIANT_CLASS = {
+  rectangle: '',
+  leaderboard: 'ad-slot--leaderboard',
+  halfpage: 'ad-slot--halfpage',
+} as const;
 
 const slotId = SITE.adsense.slots[placement];
 const enabled = SITE.adsense.enabled && Boolean(SITE.adsense.client) && Boolean(slotId);
@@ -42,7 +50,7 @@ const enabled = SITE.adsense.enabled && Boolean(SITE.adsense.client) && Boolean(
 {
   enabled && (
     <aside
-      class={`ad-slot ${variant === 'leaderboard' ? 'ad-slot--leaderboard' : ''}`}
+      class={`ad-slot ${VARIANT_CLASS[variant]} ${extra}`.trim()}
       aria-label="Advertisement"
     >
       <div>

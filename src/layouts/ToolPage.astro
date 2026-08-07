@@ -8,6 +8,11 @@
  * therefore ships: an explanation, how-to steps, honest limits, an FAQ, and
  * links to related tools.
  *
+ * Layout: the tool sits full-width at the top, because it is why anyone came.
+ * Everything below it is two columns — the reading matter, and a sticky rail
+ * carrying a table of contents, size shortcuts, and the one ad position that
+ * is safely far from the controls.
+ *
  * Usage from a page:
  *   <ToolPage tool={getTool('compress-jpg')}>
  *     <MyToolIsland slot="tool" client:load />
@@ -20,18 +25,19 @@ import AdSlot from '../components/AdSlot.astro';
 // Tool UI styles load only on tool pages; guides and content pages stay lean.
 import '../styles/tools.css';
 import { getCategory, relatedTools, type Tool } from '../data/tools';
-import {
-  breadcrumbSchema,
-  faqSchema,
-  webApplicationSchema,
-  type Crumb,
-} from '../lib/schema';
+import { breadcrumbSchema, faqSchema, webApplicationSchema, type Crumb } from '../lib/schema';
 
 export interface Props {
   tool: Tool;
+  /**
+   * Extra rail entries for headings the page adds through the `content` slot.
+   * The layout cannot see inside a slot, so a page that adds its own <h2>
+   * declares it here rather than the TOC silently going out of date.
+   */
+  extraToc?: { id: string; label: string }[];
 }
 
-const { tool } = Astro.props;
+const { tool, extraToc = [] } = Astro.props;
 const category = getCategory(tool.category);
 const related = relatedTools(tool);
 const path = `/${tool.slug}/`;
@@ -42,11 +48,29 @@ const crumbs: Crumb[] = [
   { name: tool.name, path },
 ];
 
-const schema = [
-  webApplicationSchema(tool),
-  breadcrumbSchema(crumbs),
-  faqSchema(tool.faqs),
+const schema = [webApplicationSchema(tool), breadcrumbSchema(crumbs), faqSchema(tool.faqs)];
+
+const howToHeading = `How to ${tool.h1.charAt(0).toLowerCase()}${tool.h1.slice(1)}`;
+
+const toc = [
+  ...extraToc,
+  { id: 'how-to', label: howToHeading },
+  { id: 'limits', label: 'Limits worth knowing' },
+  { id: 'faq', label: 'Frequently asked questions' },
 ];
+
+/*
+  Byte-budget shortcuts. Real limits arrive as "under 2 MB", never as
+  "quality 74", so these double as internal links and as a reminder that
+  target-size mode exists — the feature most visitors never discover.
+*/
+const targets = [
+  { label: 'Compress to 2 MB', for: 'YOUTUBE' },
+  { label: 'Compress to 1 MB', for: 'ETSY' },
+  { label: 'Compress to 500 KB', for: 'EMAIL' },
+  { label: 'Compress to 200 KB', for: 'WEB' },
+];
+const showTargets = category.slug === 'compress';
 ---
 
 <Base
@@ -68,13 +92,6 @@ const schema = [
   <slot name="tool" />
 
   <div class="privacy-note">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
-      <path
-        d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"
-        stroke-linecap="round"
-        stroke-linejoin="round"></path>
-      <path d="M9 12l2 2 4-4" stroke-linecap="round" stroke-linejoin="round"></path>
-    </svg>
     <div>
       <strong>Your files never leave this device.</strong> Everything happens inside your browser,
       so there is no upload, no server copy and nothing to delete afterwards. You can test that
@@ -82,71 +99,108 @@ const schema = [
     </div>
   </div>
 
-  {/* ── Page-specific explanation ────────────────────────────────────────── */}
-  <slot name="content" />
+  <div class="with-rail">
+    <div class="with-rail__main">
+      {/* ── Page-specific explanation ────────────────────────────────────── */}
+      <slot name="content" />
 
-  {/* ── How to use ───────────────────────────────────────────────────────── */}
-  <section class="section">
-    <h2 id="how-to">How to {tool.h1.charAt(0).toLowerCase() + tool.h1.slice(1)}</h2>
-    <ol class="steps">
-      {tool.steps.map((step) => <li><span>{step}</span></li>)}
-    </ol>
-  </section>
+      {/* ── How to use ───────────────────────────────────────────────────── */}
+      <section class="section">
+        <h2 id="how-to" class="rule-top">{howToHeading}</h2>
+        <ol class="steps">
+          {tool.steps.map((step) => <li><span>{step}</span></li>)}
+        </ol>
+      </section>
 
-  {/*
-    Ad placement: separated from the tool controls by all the content above.
-    Never put a slot adjacent to the dropzone or the download buttons — Google's
-    placement policy prohibits ads next to action items.
-  */}
-  <AdSlot placement="inArticle" />
+      {/*
+        Ad placement: separated from the tool controls by every section above.
+        Never put a slot adjacent to the dropzone or the download buttons —
+        Google's placement policy prohibits ads next to action items, and the
+        penalty lands on the whole account rather than one unit.
+      */}
+      <AdSlot placement="inArticle" />
 
-  {/* ── Honest limits ────────────────────────────────────────────────────── */}
-  <section class="section">
-    <h2 id="limits">Limits worth knowing</h2>
-    <p>
-      Every tool has boundaries. These are this one's, stated plainly so you do not waste time
-      discovering them yourself.
-    </p>
-    <ul>
-      {tool.limits.map((limit) => <li>{limit}</li>)}
-    </ul>
-  </section>
+      {/* ── Honest limits ────────────────────────────────────────────────── */}
+      <section class="section">
+        <h2 id="limits" class="rule-top">Limits worth knowing</h2>
+        <p>
+          Every tool has boundaries. These are this one's, stated plainly so you do not waste time
+          discovering them yourself.
+        </p>
+        <ul>
+          {tool.limits.map((limit) => <li>{limit}</li>)}
+        </ul>
+      </section>
 
-  {/* ── FAQ ──────────────────────────────────────────────────────────────── */}
-  <section class="section">
-    <h2 id="faq">Frequently asked questions</h2>
-    <div class="faq">
-      {
-        tool.faqs.map((faq) => (
-          <details>
-            <summary>{faq.q}</summary>
-            <div class="faq__answer">{faq.a}</div>
-          </details>
-        ))
-      }
+      {/* ── FAQ ──────────────────────────────────────────────────────────── */}
+      <section class="section">
+        <h2 id="faq" class="rule-top">Frequently asked questions</h2>
+        <div class="faq">
+          {
+            tool.faqs.map((faq) => (
+              <details>
+                <summary>{faq.q}</summary>
+                <div class="faq__answer">{faq.a}</div>
+              </details>
+            ))
+          }
+        </div>
+      </section>
+
+      {/* ── Related tools: crawlable links with descriptive anchor text ──── */}
+      <section class="related">
+        <h2>Do the next thing</h2>
+        <ul class="tool-grid">
+          {
+            related.map((r) => (
+              <li>
+                <a class="tool-card" href={`/${r.slug}/`}>
+                  <span class="tool-card__name">{r.name}</span>
+                  <span class="tool-card__desc">{r.blurb.split('.')[0]}.</span>
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+        <p style="margin-top: var(--space-5)" class="text-sm text-muted">
+          Browse all <a href={`/${category.slug}/`}>{category.name.toLowerCase()} tools</a>, or see
+          the <a href="/">full list of image tools</a>.
+        </p>
+      </section>
     </div>
-  </section>
 
-  {/* ── Related tools: 3-4 crawlable links with descriptive anchor text ──── */}
-  <section class="related">
-    <h2>Related tools</h2>
-    <ul class="tool-grid">
+    <aside class="rail" aria-label="Page navigation">
+      <nav class="rail-card">
+        <p class="rail-card__head">On this page</p>
+        <ul>
+          {toc.map((item) => <li><a href={`#${item.id}`}>{item.label}</a></li>)}
+        </ul>
+      </nav>
+
+      {/*
+        Half-page unit. Hidden below 1100px by .rail__desktop-only — at that
+        width the rail stacks under the article, and a 600px-tall ad becomes a
+        wall between the reader and the rest of the page.
+      */}
+      <AdSlot placement="inArticle" variant="halfpage" class="rail__desktop-only" />
+
       {
-        related.map((r) => (
-          <li>
-            <a class="tool-card" href={`/${r.slug}/`}>
-              <span class="tool-card__name">{r.name}</span>
-              <span class="tool-card__desc">{r.blurb.split('.')[0]}.</span>
-            </a>
-          </li>
-        ))
+        showTargets && (
+          <div class="rail-card rail-card--ink">
+            <p class="rail-card__head">Common targets</p>
+            <ul>
+              {targets.map((t) => (
+                <li class="rail-card__row">
+                  <a href="/compress-jpg/">{t.label}</a>
+                  <span class="rail-card__tag">{t.for}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )
       }
-    </ul>
-    <p style="margin-top: var(--space-5)" class="text-sm text-muted">
-      Browse all <a href={`/${category.slug}/`}>{category.name.toLowerCase()} tools</a>, or see
-      the <a href="/">full list of image tools</a>.
-    </p>
-  </section>
+    </aside>
+  </div>
 
   <AdSlot placement="belowContent" variant="leaderboard" />
 </Base>

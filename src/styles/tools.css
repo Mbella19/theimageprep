@@ -3,12 +3,17 @@
    Loaded only on tool pages. Content pages and guides never download this.
    ═══════════════════════════════════════════════════════════════════════════ */
 
+/*
+  The ink border is deliberate and used exactly once per page. On a layout
+  built from hairlines, a full-strength rule is what tells someone arriving
+  mid-task where the actual tool is without needing a heading to say so.
+*/
 .tool {
-  border: 1px solid var(--border);
+  border: 1px solid var(--rule);
   border-radius: var(--radius-lg);
   background: var(--bg-raised);
   padding: var(--space-5);
-  margin-bottom: var(--space-6);
+  margin-bottom: var(--space-4);
   position: relative;
 }
 
@@ -52,15 +57,15 @@
 /* ─────────────────────────────── DROPZONE ───────────────────────────────── */
 
 .dropzone {
-  border: 2px dashed var(--border-strong);
-  border-radius: var(--radius);
+  border: 1.5px dashed var(--border-strong);
+  border-radius: 11px;
   background: var(--bg-subtle);
   transition: border-color 0.15s, background-color 0.15s;
 }
 
 .dropzone.is-dragging {
-  border-color: var(--accent);
-  background: var(--accent-subtle);
+  border-color: var(--rule);
+  background: var(--bg-inset);
 }
 
 .dropzone.is-disabled {
@@ -99,8 +104,9 @@
 }
 
 .dropzone__label {
-  font-size: var(--step-1);
-  font-weight: 620;
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: -0.015em;
   color: var(--text);
 }
 
@@ -235,8 +241,24 @@
 
 /* ──────────────────────────────── RESULTS ───────────────────────────────── */
 
+/* The output area is a distinct surface inside the tool panel — it separates
+   "what you are setting" from "what came out" without another heading. */
 .results {
   margin-top: var(--space-5);
+  padding: var(--space-4);
+  margin-inline: calc(var(--space-5) * -1);
+  margin-bottom: calc(var(--space-5) * -1);
+  border-top: 1px solid var(--border);
+  background: var(--bg-subtle);
+  border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+}
+
+@media (min-width: 640px) {
+  .results {
+    margin-inline: calc(var(--space-6) * -1);
+    margin-bottom: calc(var(--space-6) * -1);
+    padding: var(--space-5);
+  }
 }
 
 .result-list {
@@ -249,10 +271,10 @@
 
 .result-row {
   display: grid;
-  grid-template-columns: 56px 1fr auto;
-  gap: var(--space-4);
+  grid-template-columns: 54px 1fr auto;
+  gap: var(--space-3) var(--space-4);
   align-items: center;
-  padding: var(--space-3);
+  padding: 12px 14px;
   border: 1px solid var(--border);
   border-radius: var(--radius);
   background: var(--bg);
@@ -291,16 +313,19 @@
 
 .result-row__name {
   font-weight: 600;
-  font-size: var(--step--1);
+  font-size: 14.5px;
+  letter-spacing: -0.01em;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
 .result-row__meta {
-  font-size: var(--step--2);
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  font-size: 12px;
   color: var(--text-muted);
-  margin-top: 2px;
+  margin-top: 4px;
 }
 
 .result-row__error {
@@ -346,18 +371,22 @@
 
 .badge {
   display: inline-block;
-  padding: 2px var(--space-2);
+  padding: 5px 11px;
   border-radius: var(--radius-full);
-  font-size: var(--step--2);
-  font-weight: 650;
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
   background: var(--bg-inset);
   color: var(--text-muted);
   white-space: nowrap;
 }
 
+/* Green appears here and essentially nowhere else on the site, which is what
+   makes it register at all. */
 .badge--good {
-  background: var(--accent-subtle);
-  color: var(--accent);
+  background: var(--good-subtle);
+  color: var(--good);
 }
 
 .badge--warn {

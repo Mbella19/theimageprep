@@ -4,9 +4,19 @@ import ConvertImage from '../tools/ConvertImage';
 import { getTool } from '../data/tools';
 
 const tool = getTool('png-to-jpg');
+
+/* Headings this page adds through the `content` slot. The layout cannot
+   see inside a slot, so the rail's table of contents is declared here or
+   it silently goes out of date. */
+const extraToc = [
+  { id: "transparency", label: "The transparency question comes first" },
+  { id: "should-you", label: "Should you convert at all?" },
+  { id: "quality", label: "Choosing a quality setting" },
+  { id: "reversibility", label: "This conversion is one-way" },
+];
 ---
 
-<ToolPage tool={tool}>
+<ToolPage extraToc={extraToc} tool={tool}>
   <ConvertImage
     slot="tool"
     to="jpeg"

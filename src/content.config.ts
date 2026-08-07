@@ -20,6 +20,18 @@ const guides = defineCollection({
     h1: z.string(),
     /** One-sentence intro shown under the h1 */
     blurb: z.string(),
+    /**
+     * Short mono label above the h1 and on guide cards — "YouTube", "Print",
+     * "Privacy". Defaults to "Guide" so an author can leave it out.
+     */
+    kicker: z.string().default('Guide'),
+    /**
+     * Where the numbers in this guide were checked, shown in the byline.
+     * Platform specs go stale constantly and most sites never say when they
+     * last looked; saying so is cheap and is exactly the kind of detail that
+     * earns a link.
+     */
+    sourceNote: z.string().optional(),
     published: z.string(),
     updated: z.string().optional(),
     /** Tool slugs this guide should link to */

@@ -7,9 +7,19 @@ import { PRESETS, VERIFIED_ON, presetsByPlatform } from '../data/presets';
 const tool = getTool('social-media-image-sizes');
 const socialGroups = presetsByPlatform('social');
 const marketGroups = presetsByPlatform('marketplace');
+
+/* Headings this page adds through the `content` slot. The layout cannot
+   see inside a slot, so the rail's table of contents is declared here or
+   it silently goes out of date. */
+const extraToc = [
+  { id: "reference", label: "The full size reference" },
+  { id: "youtube-note", label: "The YouTube thumbnail advice you have read is out of date" },
+  { id: "one-image", label: "Why one image for everything does not work" },
+  { id: "source", label: "Start from the largest original you have" },
+];
 ---
 
-<ToolPage tool={tool}>
+<ToolPage extraToc={extraToc} tool={tool}>
   <SocialSizes slot="tool" client:load />
 
   <Fragment slot="content">

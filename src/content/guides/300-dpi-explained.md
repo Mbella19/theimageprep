@@ -3,6 +3,7 @@ title: '300 DPI Explained: What Printers Actually Want'
 description: 'DPI is a label, not a quality setting. Here is what 300 DPI means, how many pixels you really need, and why DPI changes often appear to fail.'
 h1: '300 DPI for Print, Explained'
 blurb: 'The most misunderstood number in digital imaging. What it means, how many pixels you actually need, and why changing it sometimes appears to do nothing.'
+kicker: 'Print'
 published: '2026-08-07'
 relatedTools:
   - change-image-dpi

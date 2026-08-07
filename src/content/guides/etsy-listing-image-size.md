@@ -3,6 +3,8 @@ title: 'Etsy Listing Photo Size: What to Upload in 2026'
 description: 'Etsy wants 2000px on the shortest side. Here is why that number matters, which ratio to use, and how to prepare listing photos properly.'
 h1: 'Etsy Listing Photo Size and Requirements'
 blurb: 'The dimensions Etsy asks for, why undersized photos look blurry in the listing grid, and how to prepare a full set without an image editor.'
+kicker: 'Etsy'
+sourceNote: 'Checked against Etsy Seller Handbook'
 published: '2026-08-07'
 relatedTools:
   - resize-image

@@ -3,6 +3,8 @@ title: 'Instagram Image Sizes: Posts, Stories and Reels'
 description: 'Every Instagram size in one table, why 1080x1350 outperforms square, and how to stop Instagram compressing your photos into mush.'
 h1: 'Instagram Image Sizes'
 blurb: 'The dimensions for every placement, why portrait posts win, and the upload settings that stop Instagram destroying your image quality.'
+kicker: 'Instagram'
+sourceNote: 'Checked against Instagram Help'
 published: '2026-08-07'
 relatedTools:
   - crop-image

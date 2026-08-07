@@ -4,9 +4,19 @@ import CompressImage from '../tools/CompressImage';
 import { getTool } from '../data/tools';
 
 const tool = getTool('compress-webp');
+
+/* Headings this page adds through the `content` slot. The layout cannot
+   see inside a slot, so the rail's table of contents is declared here or
+   it silently goes out of date. */
+const extraToc = [
+  { id: "how-it-works", label: "How WebP compression works" },
+  { id: "quality-scale", label: "WebP quality numbers are not JPEG quality numbers" },
+  { id: "where-to-use", label: "Where WebP belongs, and where it does not" },
+  { id: "recompressing", label: "A note on re-compressing" },
+];
 ---
 
-<ToolPage tool={tool}>
+<ToolPage extraToc={extraToc} tool={tool}>
   <CompressImage
     slot="tool"
     format="webp"

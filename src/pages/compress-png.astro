@@ -4,9 +4,19 @@ import CompressPng from '../tools/CompressPng';
 import { getTool } from '../data/tools';
 
 const tool = getTool('compress-png');
+
+/* Headings this page adds through the `content` slot. The layout cannot
+   see inside a slot, so the rail's table of contents is declared here or
+   it silently goes out of date. */
+const extraToc = [
+  { id: "how-it-works", label: "Two different things called \"PNG compression\"" },
+  { id: "when-to-reduce", label: "When colour reduction works, and when it does not" },
+  { id: "dithering", label: "What dithering does" },
+  { id: "transparency", label: "Transparency is preserved" },
+];
 ---
 
-<ToolPage tool={tool}>
+<ToolPage extraToc={extraToc} tool={tool}>
   <CompressPng slot="tool" client:load />
 
   <Fragment slot="content">

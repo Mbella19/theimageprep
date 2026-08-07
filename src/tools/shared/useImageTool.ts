@@ -4,6 +4,7 @@ import type { JobSource, Operation, OutputSpec, ImageFormat } from '../../lib/im
 import { MIME_BY_FORMAT } from '../../lib/imageTypes';
 import { createZip } from '../../lib/zip';
 import { downloadBlob, isProbablyImage, safeFileName } from '../../lib/files';
+import { hasPendingHandoff, takeFile } from '../../lib/handoff';
 
 export type FileStatus = 'pending' | 'working' | 'done' | 'error';
 
@@ -248,6 +249,38 @@ export function useImageTool<S extends object>(
     setSettingsState((prev) =>
       typeof updater === 'function' ? (updater as (p: S) => S)(prev) : updater,
     );
+  }, []);
+
+  // ── Handoff from the homepage dropzone ───────────────────────────────────
+  //
+  // The homepage takes any image, works out which tool it needs, and sends the
+  // visitor here with the file waiting in IndexedDB. Picking it up has to
+  // happen once, on mount, before anything else touches `files`.
+  //
+  // Gated on a URL marker so the 99% of visits that arrive from search never
+  // pay for an IndexedDB round trip just to find nothing waiting.
+  const addFilesRef = useRef(addFiles);
+  addFilesRef.current = addFiles;
+
+  useEffect(() => {
+    if (!hasPendingHandoff()) return;
+    let cancelled = false;
+
+    void takeFile().then((file) => {
+      if (cancelled || !file) return;
+      addFilesRef.current([file]);
+    });
+
+    // Strip the marker so a refresh does not try to consume an already-taken
+    // file, and so the URL the visitor might copy is the clean canonical one.
+    // replaceState leaves no history entry, so Back still goes home.
+    if (typeof window !== 'undefined' && window.history?.replaceState) {
+      window.history.replaceState({}, '', window.location.pathname);
+    }
+
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   // ── Trigger 1: new files arrive ──────────────────────────────────────────

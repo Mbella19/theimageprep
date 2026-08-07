@@ -15,9 +15,10 @@
     "test:watch": "vitest",
     "verify": "node scripts/verify-browser.mjs",
     "verify:outputs": "node scripts/verify-outputs.mjs",
-    "verify:all": "npm run test && npm run build && npm run verify && npm run verify:outputs",
+    "verify:all": "npm run test && npm run build && npm run verify && npm run verify:outputs && npm run verify:handoff",
     "assets": "node scripts/make-assets.mjs",
-    "fixtures": "node scripts/make-fixtures.mjs"
+    "fixtures": "node scripts/make-fixtures.mjs",
+    "verify:handoff": "node scripts/verify-handoff.mjs"
   },
   "dependencies": {
     "@astrojs/mdx": "^7.0.5",

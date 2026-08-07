@@ -3,6 +3,8 @@ title: 'Amazon Product Image Requirements Explained'
 description: 'The 1000px zoom threshold, the pure white background rule, the 85% frame rule, and what gets a listing suppressed.'
 h1: 'Amazon Product Image Requirements'
 blurb: 'Amazon enforces its image rules more strictly than any other marketplace. Here is what they are and which ones will get a listing suppressed.'
+kicker: 'Amazon'
+sourceNote: 'Checked against Amazon Seller Central'
 published: '2026-08-07'
 relatedTools:
   - resize-image

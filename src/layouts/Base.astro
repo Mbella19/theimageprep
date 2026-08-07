@@ -28,6 +28,31 @@ const { schema, ...seo } = Astro.props;
     {schema && <JsonLd schema={schema} />}
 
     {/*
+      Preload both fonts. They are self-hosted (see the note at the top of
+      global.css — hotlinking Google would hand every visitor's IP to a third
+      party on a site whose whole claim is that nothing leaves the device).
+
+      Without these hints the browser only discovers the font files after it
+      has parsed the CSS, which pushes the swap late enough to be visible.
+      `crossorigin` is required even for same-origin fonts: font requests are
+      always made in CORS mode, and omitting it downloads the file twice.
+    */}
+    <link
+      rel="preload"
+      href="/fonts/instrument-sans-latin.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link
+      rel="preload"
+      href="/fonts/jetbrains-mono-latin.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+
+    {/*
       AdSense loader. Absent entirely until you enable ads in src/config.ts.
 
       Note there is deliberately NO Cross-Origin-Embedder-Policy on this site:
@@ -64,6 +89,12 @@ const { schema, ...seo } = Astro.props;
       <div class="container">
         <slot />
       </div>
+      {/*
+        Full-bleed sections opt out of the container by going in this slot
+        instead. It stays inside <main> so the document outline is unaffected
+        and the skip link still lands above everything.
+      */}
+      <slot name="bleed" />
     </main>
     <Footer />
   </body>

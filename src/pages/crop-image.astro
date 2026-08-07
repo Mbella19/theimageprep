@@ -4,9 +4,19 @@ import CropImage from '../tools/CropImage';
 import { getTool } from '../data/tools';
 
 const tool = getTool('crop-image');
+
+/* Headings this page adds through the `content` slot. The layout cannot
+   see inside a slot, so the rail's table of contents is declared here or
+   it silently goes out of date. */
+const extraToc = [
+  { id: "exact-dimensions", label: "Getting exactly the dimensions you asked for" },
+  { id: "crop-vs-resize", label: "Cropping and resizing are different operations" },
+  { id: "ratios", label: "Which aspect ratio for which platform" },
+  { id: "quality", label: "Cropping and image quality" },
+];
 ---
 
-<ToolPage tool={tool}>
+<ToolPage extraToc={extraToc} tool={tool}>
   <CropImage slot="tool" client:load />
 
   <Fragment slot="content">

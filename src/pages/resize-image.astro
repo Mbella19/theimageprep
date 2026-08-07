@@ -4,9 +4,19 @@ import ResizeImage from '../tools/ResizeImage';
 import { getTool } from '../data/tools';
 
 const tool = getTool('resize-image');
+
+/* Headings this page adds through the `content` slot. The layout cannot
+   see inside a slot, so the rail's table of contents is declared here or
+   it silently goes out of date. */
+const extraToc = [
+  { id: "fit-fill-stretch", label: "Fit, fill and stretch" },
+  { id: "quality", label: "Why resized images sometimes look soft" },
+  { id: "order", label: "Resize before you compress, not after" },
+  { id: "presets", label: "Platform presets" },
+];
 ---
 
-<ToolPage tool={tool}>
+<ToolPage extraToc={extraToc} tool={tool}>
   <ResizeImage slot="tool" client:load />
 
   <Fragment slot="content">

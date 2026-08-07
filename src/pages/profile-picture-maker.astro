@@ -4,9 +4,19 @@ import ProfilePicture from '../tools/ProfilePicture';
 import { getTool } from '../data/tools';
 
 const tool = getTool('profile-picture-maker');
+
+/* Headings this page adds through the `content` slot. The layout cannot
+   see inside a slot, so the rail's table of contents is declared here or
+   it silently goes out of date. */
+const extraToc = [
+  { id: "png-or-jpg", label: "Transparent PNG or JPG with a background?" },
+  { id: "size", label: "What size to export" },
+  { id: "framing", label: "Framing a face that reads at 40 pixels" },
+  { id: "blurry", label: "Why avatars come out blurry" },
+];
 ---
 
-<ToolPage tool={tool}>
+<ToolPage extraToc={extraToc} tool={tool}>
   <ProfilePicture slot="tool" client:load />
 
   <Fragment slot="content">

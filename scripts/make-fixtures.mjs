@@ -172,10 +172,16 @@ await writeFile(
  * The case where colour reduction genuinely wins by a wide margin, and the
  * counterpart to gradient-alpha.png where it loses to lossless.
  */
-await writeFile(
-  join(outDir, 'photo.png'),
-  await photoInput().png({ compressionLevel: 6 }).toBuffer(),
-);
+const photoPng = await photoInput().png({ compressionLevel: 6 }).toBuffer();
+await writeFile(join(outDir, 'photo.png'), photoPng);
+
+/* ── PNG bytes wearing a .jpg extension ──────────────────────────────────────
+ * The homepage dropzone routes on magic bytes, never on the filename or the
+ * MIME type the OS reports — both lie constantly. This fixture is the one that
+ * can tell the difference: if routing ever regresses to trusting the
+ * extension, this file lands on the JPEG compressor instead of the PNG one.
+ */
+await writeFile(join(outDir, 'mislabelled.jpg'), photoPng);
 
 /* ── Tiny image, for boundary behaviour ──────────────────────────────────── */
 await writeFile(

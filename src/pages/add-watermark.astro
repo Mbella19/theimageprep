@@ -4,9 +4,20 @@ import Watermark from '../tools/Watermark';
 import { getTool } from '../data/tools';
 
 const tool = getTool('add-watermark');
+
+/* Headings this page adds through the `content` slot. The layout cannot
+   see inside a slot, so the rail's table of contents is declared here or
+   it silently goes out of date. */
+const extraToc = [
+  { id: "placement", label: "Where to put a watermark" },
+  { id: "opacity", label: "Getting the opacity right" },
+  { id: "marketplaces", label: "Watermarks and marketplace listings" },
+  { id: "logo-tips", label: "Using a logo instead of text" },
+  { id: "honesty", label: "What a watermark actually protects" },
+];
 ---
 
-<ToolPage tool={tool}>
+<ToolPage extraToc={extraToc} tool={tool}>
   <Watermark slot="tool" client:load />
 
   <Fragment slot="content">
