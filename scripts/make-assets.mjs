@@ -22,28 +22,36 @@ const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const publicDir = join(root, 'public');
 const ogDir = join(publicDir, 'og');
 
-const ACCENT = '#0f6e60';
-const INK = '#13201d';
-const PAPER = '#ffffff';
-const MUTED = '#59665f';
+/* Must track the tokens in src/styles/global.css. These are baked into the
+   favicon and the Open Graph cards, so a palette change here needs
+   `npm run assets` to actually reach the pixels. */
+const ACCENT = '#16171a';
+const INK = '#16171a';
+const PAPER = '#f2f0ec';
+const MUTED = '#8d8a84';
 
 await mkdir(ogDir, { recursive: true });
 
 /* ══════════════════════════════ BRAND MARK ═══════════════════════════════ */
 
-/** The same geometric mark used in the site header. */
+/**
+ * The same mark as .brand__mark in the header: a solid square with a notch
+ * bitten out of the bottom-right corner — a crop handle, reduced until it
+ * still reads at 16 pixels.
+ *
+ * Solid rather than a stroked outline on purpose. The previous mark was a
+ * 1.8px-stroke line drawing, which at favicon size collapses into grey mush;
+ * a filled shape keeps its silhouette all the way down.
+ */
 function markSvg(size, color = ACCENT, background = null) {
   const bg = background
-    ? `<rect width="24" height="24" rx="5" fill="${background}"/>`
+    ? `<rect width="24" height="24" fill="${background}"/>`
     : '';
+  // The notch is punched with an even-odd fill rather than a second shape in
+  // the background colour, so the icon stays correct on any backdrop.
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 24 24">
   ${bg}
-  <g fill="none" stroke="${color}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-    <rect x="2.5" y="6.5" width="12" height="12" rx="2.5"/>
-    <path d="M9.5 6.5V5A2.5 2.5 0 0 1 12 2.5h6.5a3 3 0 0 1 3 3V12a2.5 2.5 0 0 1-2.5 2.5h-1.5"/>
-    <path d="M2.5 14.5l3.2-3.2a2 2 0 0 1 2.8 0l5.5 5.5"/>
-  </g>
-  <circle cx="10.4" cy="10.4" r="1.3" fill="${color}"/>
+  <path fill="${color}" fill-rule="evenodd" d="M5 2.5h14a2.5 2.5 0 0 1 2.5 2.5v14a2.5 2.5 0 0 1-2.5 2.5H5A2.5 2.5 0 0 1 2.5 19V5A2.5 2.5 0 0 1 5 2.5Zm8.6 18.9h5.4a2.4 2.4 0 0 0 2.4-2.4v-5.4a2 2 0 0 0-2-2h-3.8a2 2 0 0 0-2 2v5.8Z"/>
 </svg>`;
 }
 
@@ -54,22 +62,15 @@ const pngFromSvg = (svg, size) =>
 
 await writeFile(
   join(publicDir, 'favicon.svg'),
+  // Ink on light, and light on dark. The mark inverts for a dark browser
+  // chrome so it never disappears into a dark tab strip — the SITE is
+  // light-only, but a favicon has to survive whatever UI surrounds it.
   `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
   <style>
-    :root { color-scheme: light dark; }
-    .mark { stroke: ${ACCENT}; fill: none; }
-    .dot { fill: ${ACCENT}; }
-    @media (prefers-color-scheme: dark) {
-      .mark { stroke: #4fc0ac; }
-      .dot { fill: #4fc0ac; }
-    }
+    .mark { fill: ${INK}; }
+    @media (prefers-color-scheme: dark) { .mark { fill: #f2f0ec; } }
   </style>
-  <g class="mark" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-    <rect x="2.5" y="6.5" width="12" height="12" rx="2.5"/>
-    <path d="M9.5 6.5V5A2.5 2.5 0 0 1 12 2.5h6.5a3 3 0 0 1 3 3V12a2.5 2.5 0 0 1-2.5 2.5h-1.5"/>
-    <path d="M2.5 14.5l3.2-3.2a2 2 0 0 1 2.8 0l5.5 5.5"/>
-  </g>
-  <circle class="dot" cx="10.4" cy="10.4" r="1.3"/>
+  <path class="mark" fill-rule="evenodd" d="M5 2.5h14a2.5 2.5 0 0 1 2.5 2.5v14a2.5 2.5 0 0 1-2.5 2.5H5A2.5 2.5 0 0 1 2.5 19V5A2.5 2.5 0 0 1 5 2.5Zm8.6 18.9h5.4a2.4 2.4 0 0 0 2.4-2.4v-5.4a2 2 0 0 0-2-2h-3.8a2 2 0 0 0-2 2v5.8Z"/>
 </svg>`,
 );
 

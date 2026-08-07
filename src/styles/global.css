@@ -132,56 +132,22 @@
 
   --header-height: 64px;
 
+  /*
+    Committing to light. The design is a warm-paper look with a near-black
+    accent, and it is the brand — an auto-inverted version was tried and read
+    as a different site rather than the same one at night.
+
+    This declaration is load-bearing, not decorative: without it a visitor
+    whose OS is in dark mode gets browser-default dark form controls — range
+    sliders, checkboxes, scrollbars — painted onto a white page, which looks
+    broken. Naming the scheme makes the browser render its own widgets light
+    to match.
+  */
+  color-scheme: light;
+
   /* Minimum touch target. Every interactive control references this rather
      than hard-coding a height, so the floor cannot drift as things are added. */
   --tap: 44px;
-}
-
-/*
-  Dark mode is not in the source design, which is light-only. Rather than
-  invent a palette, this is lifted from the design's own dark band — the
-  privacy section on the homepage — which already establishes what this brand
-  looks like inverted: #16171a ground, #1d1e22 raised, #33343a hairlines,
-  warm off-white text. Extending that is a derivation, not a guess.
-
-  Removing dark mode was the alternative and it is worse: anyone browsing at
-  night with a system preference set would get a full-brightness page.
-*/
-@media (prefers-color-scheme: dark) {
-  :root {
-    --paper: #121316;
-    --bg: #1a1b1f;
-    --bg-subtle: #202126;
-    --bg-inset: #26272b;
-    --bg-raised: #1d1e22;
-
-    --border: #33343a;
-    --border-light: #2a2b30;
-    --border-strong: #4a4b52;
-    --rule: #6f7079;
-
-    --text: #f2f0ec;
-    --text-body: #d6d3cd;
-    --text-muted: #a3a09a;
-    --text-faint: #8a8781;
-
-    --accent: #f2f0ec;
-    --accent-hover: #ffffff;
-    --accent-subtle: #26272b;
-    --accent-border: #6f7079;
-    --on-accent: #16171a;
-
-    --good: #6ec89b;
-    --good-subtle: #163024;
-    --danger: #ef8079;
-    --danger-subtle: #2e1917;
-    --warn: #dda250;
-    --warn-subtle: #2c2113;
-
-    --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.4);
-    --shadow: 0 1px 3px rgb(0 0 0 / 0.5), 0 8px 24px rgb(0 0 0 / 0.35);
-    --shadow-lg: 0 2px 6px rgb(0 0 0 / 0.5), 0 18px 50px rgb(0 0 0 / 0.45);
-  }
 }
 
 /* ─────────────────────────────── RESET ──────────────────────────────────── */

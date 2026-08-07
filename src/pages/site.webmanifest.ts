@@ -9,8 +9,8 @@ export const GET: APIRoute = () => {
     description: SITE.description,
     start_url: '/',
     display: 'standalone',
-    background_color: '#ffffff',
-    theme_color: '#0f6e60',
+    background_color: '#f2f0ec',
+    theme_color: '#f2f0ec',
     icons: [
       { src: '/android-chrome-192x192.png', sizes: '192x192', type: 'image/png' },
       { src: '/android-chrome-512x512.png', sizes: '512x512', type: 'image/png' },

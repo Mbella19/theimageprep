@@ -70,8 +70,10 @@ const imageUrl = absoluteUrl(ogImage);
 <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
 <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
 <link rel="manifest" href="/site.webmanifest" />
-<meta name="theme-color" content="#0f6e60" media="(prefers-color-scheme: light)" />
-<meta name="theme-color" content="#0e1614" media="(prefers-color-scheme: dark)" />
+{/* One value, no media split: the site is light-only, so a dark variant
+    would paint the browser chrome a colour that appears nowhere on the
+    page. This is the paper the header sits on. */}
+<meta name="theme-color" content="#f2f0ec" />
 
 {/* Search engine verification — omitted entirely when not configured */}
 {SITE.verification.google && (
