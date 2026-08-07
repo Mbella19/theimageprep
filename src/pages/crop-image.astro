@@ -1,0 +1,122 @@
+---
+import ToolPage from '../layouts/ToolPage.astro';
+import CropImage from '../tools/CropImage';
+import { getTool } from '../data/tools';
+
+const tool = getTool('crop-image');
+---
+
+<ToolPage tool={tool}>
+  <CropImage slot="tool" client:load />
+
+  <Fragment slot="content">
+    <section class="section">
+      <h2 id="exact-dimensions">Getting exactly the dimensions you asked for</h2>
+      <p>
+        Most crop tools give you a rectangle with draggable corners and report the size as you
+        drag. Getting to precisely 1080 by 1080 that way is fiddly on a mouse and close to
+        impossible on a phone, and being one pixel out is exactly the kind of thing an upload
+        validator rejects.
+      </p>
+      <p>
+        This tool works the other way round. You type the output size you need, the frame locks
+        to that shape, and you move the image behind it. The output is exactly the dimensions you
+        entered because it cannot be anything else — there is no dragging accuracy involved.
+      </p>
+      <p>
+        Drag to reposition, scroll or pinch to zoom. The rule-of-thirds guides are there to help
+        you place the subject; the frame edge is where the cut happens.
+      </p>
+    </section>
+
+    <section class="section">
+      <h2 id="crop-vs-resize">Cropping and resizing are different operations</h2>
+      <p>
+        <strong>Cropping</strong> cuts pixels away from the edges. What remains keeps its
+        original size and detail. Use it when the image is the wrong shape, or when there is too
+        much empty space around the subject.
+      </p>
+      <p>
+        <strong>Resizing</strong> keeps the whole picture but scales every pixel. Use it when the
+        shape is right but the image is too large or too small.
+      </p>
+      <p>
+        The two are often needed together: crop to the right shape, then scale to the right size.
+        That is what the "scale to these exact dimensions" option does — it crops the framed area
+        and then scales the result to your target. Turn it off if you would rather keep the
+        cropped region at its original pixel density.
+      </p>
+      <p>
+        If you only need to change the size, the <a href="/resize-image/">resizer</a> is the
+        simpler tool.
+      </p>
+    </section>
+
+    <section class="section">
+      <h2 id="ratios">Which aspect ratio for which platform</h2>
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th>Ratio</th>
+              <th>Common size</th>
+              <th>Where it is used</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>1:1</td>
+              <td>1080 x 1080</td>
+              <td>Instagram squares, marketplace listing photos, avatars</td>
+            </tr>
+            <tr>
+              <td>4:5</td>
+              <td>1080 x 1350</td>
+              <td>Instagram portrait posts — the most feed space you can occupy</td>
+            </tr>
+            <tr>
+              <td>16:9</td>
+              <td>1920 x 1080</td>
+              <td>YouTube thumbnails, video, presentation slides</td>
+            </tr>
+            <tr>
+              <td>9:16</td>
+              <td>1080 x 1920</td>
+              <td>Stories, Reels, TikTok, Shorts</td>
+            </tr>
+            <tr>
+              <td>2:3</td>
+              <td>1000 x 1500</td>
+              <td>Pinterest pins — taller pins get truncated</td>
+            </tr>
+            <tr>
+              <td>3:2</td>
+              <td>1800 x 1200</td>
+              <td>Standard photographic print sizes such as 6 x 4</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p>
+        Need several of these from one image? The{' '}
+        <a href="/social-media-image-sizes/">social media sizer</a> produces them all at once.
+      </p>
+    </section>
+
+    <section class="section">
+      <h2 id="quality">Cropping and image quality</h2>
+      <p>
+        Cropping itself is lossless — the remaining pixels are untouched. What costs a little
+        quality is saving the result: a JPG has to be re-encoded, which is one more generation of
+        compression. It is a small effect, but it is a reason to crop from your original rather
+        than from a copy that has already been compressed several times.
+      </p>
+      <p>
+        The bigger risk is cropping too tightly. Cutting a small region out of a small image
+        leaves you with a small image, and enlarging it back up will not restore the detail. Keep
+        an eye on the output dimensions shown below the frame — if the tool warns that the framed
+        area is smaller than your target size, it is about to enlarge and soften your crop.
+      </p>
+    </section>
+  </Fragment>
+</ToolPage>

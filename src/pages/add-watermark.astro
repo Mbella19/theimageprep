@@ -1,0 +1,128 @@
+---
+import ToolPage from '../layouts/ToolPage.astro';
+import Watermark from '../tools/Watermark';
+import { getTool } from '../data/tools';
+
+const tool = getTool('add-watermark');
+---
+
+<ToolPage tool={tool}>
+  <Watermark slot="tool" client:load />
+
+  <Fragment slot="content">
+    <section class="section">
+      <h2 id="placement">Where to put a watermark</h2>
+      <p>
+        Every placement is a trade between how hard it is to remove and how much it interferes
+        with the image. There is no setting that is good at both.
+      </p>
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th>Placement</th>
+              <th>Removal difficulty</th>
+              <th>Intrusiveness</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Corner, low opacity</td>
+              <td>Low — a crop removes it in seconds</td>
+              <td>Minimal</td>
+            </tr>
+            <tr>
+              <td>Centred, very low opacity</td>
+              <td>Moderate — needs deliberate retouching</td>
+              <td>Noticeable</td>
+            </tr>
+            <tr>
+              <td>Tiled across the image</td>
+              <td>High — covers everything worth taking</td>
+              <td>Significant</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p>
+        Most people default to a corner because it looks professional, then are surprised when a
+        cropped copy appears elsewhere. Decide honestly how much you mind: if the answer is "not
+        very", a corner mark is fine and mostly serves as attribution. If the answer is "a great
+        deal", tile it and accept the cost.
+      </p>
+    </section>
+
+    <section class="section">
+      <h2 id="opacity">Getting the opacity right</h2>
+      <p>
+        Between 25 and 50 percent works for most photographs. Below 20 percent a watermark
+        disappears entirely against busy or bright areas; above 60 percent it starts to compete
+        with the image.
+      </p>
+      <p>
+        The harder problem is that one setting has to work across a whole batch. White text at 35
+        percent looks right on a dark photo and vanishes on a bright one. Two things help: turn on
+        the drop shadow, which keeps light text readable over light areas at almost no visual
+        cost, and preview against your brightest and darkest images before committing to a large
+        batch.
+      </p>
+    </section>
+
+    <section class="section">
+      <h2 id="marketplaces">Watermarks and marketplace listings</h2>
+      <p>
+        This is worth checking before you watermark a batch of product photos, because the rules
+        differ and one of them is strict.
+      </p>
+      <p>
+        <strong>Amazon does not allow them.</strong> Watermarks, logos and added text on the main
+        product image are against Amazon's image requirements, and listings can be suppressed for
+        it. The main image must be the product on a pure white background and nothing else.
+      </p>
+      <p>
+        <strong>Etsy and eBay permit them</strong>, but plenty of experienced sellers avoid them
+        anyway — a watermark reads as defensive, and it interrupts the clean product photography
+        that converts best.
+      </p>
+      <p>
+        Watermarking makes far more sense on blog images, portfolio work, photography you licence,
+        and social posts, where attribution has real value and there is no platform rule against
+        it.
+      </p>
+    </section>
+
+    <section class="section">
+      <h2 id="logo-tips">Using a logo instead of text</h2>
+      <p>
+        Upload a PNG with a genuinely transparent background. A logo saved on a solid white
+        rectangle will show that rectangle sitting on top of your photograph, which is the most
+        common mistake here.
+      </p>
+      <p>
+        It is worth keeping two versions — one light, one dark — and switching depending on the
+        image. A dark logo on a dark photograph is invisible no matter what opacity you choose.
+      </p>
+      <p>
+        If your logo needs preparing first, the <a href="/compress-png/">PNG tools</a> will keep
+        the transparency intact, and the <a href="/resize-image/">resizer</a> can bring an
+        oversized logo down to a sensible working size.
+      </p>
+    </section>
+
+    <section class="section">
+      <h2 id="honesty">What a watermark actually protects</h2>
+      <p>
+        Not much, and it is better to know that going in. A watermark is a deterrent and an
+        attribution mark, not a security measure. Corner marks are cropped off in seconds,
+        centred ones can be retouched, and automated removal tools have become genuinely good at
+        both.
+      </p>
+      <p>
+        What it does reliably is make casual reuse slightly inconvenient and make the source
+        obvious when an image is shared onward intact. That is worth something. Just keep your
+        unwatermarked originals, because the watermark is burned into the output permanently and
+        there is no undo.
+      </p>
+    </section>
+  </Fragment>
+</ToolPage>

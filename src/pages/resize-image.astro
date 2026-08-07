@@ -1,0 +1,107 @@
+---
+import ToolPage from '../layouts/ToolPage.astro';
+import ResizeImage from '../tools/ResizeImage';
+import { getTool } from '../data/tools';
+
+const tool = getTool('resize-image');
+---
+
+<ToolPage tool={tool}>
+  <ResizeImage slot="tool" client:load />
+
+  <Fragment slot="content">
+    <section class="section">
+      <h2 id="fit-fill-stretch">Fit, fill and stretch</h2>
+      <p>
+        This is the decision that determines whether a resize looks right, and it only matters
+        when the shape you are asking for differs from the shape you have. Ask for a 1080 by 1080
+        square from a 4:3 photograph and something has to give.
+      </p>
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th>Mode</th>
+              <th>What happens</th>
+              <th>Use it when</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Fill</strong></td>
+              <td>Scales until the box is covered, then trims the overflow from the centre</td>
+              <td>Social posts and thumbnails, where filling the frame matters more than the edges</td>
+            </tr>
+            <tr>
+              <td><strong>Fit</strong></td>
+              <td>Scales until the whole image is inside the box, leaving empty space</td>
+              <td>Product photos and artwork, where nothing may be cut off</td>
+            </tr>
+            <tr>
+              <td><strong>Stretch</strong></td>
+              <td>Forces the exact dimensions, distorting the picture</td>
+              <td>Almost never — but occasionally a spec genuinely demands it</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p>
+        Fill is right most of the time. Its one hazard is automatic centring: the tool has no idea
+        where the subject of your photo is, so a face near the edge can end up cropped. When
+        framing matters, use the <a href="/crop-image/">crop tool</a> instead and choose the
+        framing yourself.
+      </p>
+    </section>
+
+    <section class="section">
+      <h2 id="quality">Why resized images sometimes look soft</h2>
+      <p>
+        Two different causes, with two different answers.
+      </p>
+      <p>
+        <strong>Enlarging.</strong> If you scale a 400 pixel image up to 1200 pixels, the extra
+        pixels have to be invented by interpolating between the ones that exist. No algorithm can
+        recover detail that was never captured, so the result is inherently soft. The only real
+        fix is to start from a larger original.
+      </p>
+      <p>
+        <strong>Poor downscaling.</strong> Shrinking an image badly is a solved problem that many
+        tools still get wrong. Naive methods sample scattered pixels and throw the rest away,
+        which produces aliasing — jagged diagonals and shimmering fine detail. This tool uses
+        Lanczos3 resampling, which considers a neighbourhood of surrounding pixels and weights
+        them, preserving sharpness through large reductions.
+      </p>
+    </section>
+
+    <section class="section">
+      <h2 id="order">Resize before you compress, not after</h2>
+      <p>
+        The order matters more than people expect. File size scales roughly with the number of
+        pixels, so halving both width and height leaves a quarter of the pixels and usually
+        something close to a quarter of the file.
+      </p>
+      <p>
+        That makes resizing a far more powerful size-reduction tool than compression. If you are
+        struggling to fit a photograph under a limit by lowering quality, you are using the weak
+        lever. Reduce the dimensions to what the image will actually be displayed at, and then
+        compress — a 4000 pixel wide photograph shown in a 800 pixel wide column is carrying five
+        times more data than anyone will ever see.
+      </p>
+      <p>
+        Once the dimensions are right, hand it to the <a href="/compress-jpg/">JPG compressor</a>{' '}
+        or <a href="/compress-webp/">WebP compressor</a>.
+      </p>
+    </section>
+
+    <section class="section">
+      <h2 id="presets">Platform presets</h2>
+      <p>
+        The preset menu covers Instagram, YouTube, TikTok, Pinterest, Facebook, X, LinkedIn,
+        Etsy, Amazon, eBay and Shopify. If you need several sizes from one image at once — a
+        square for the feed, a portrait for the post, a vertical for stories — the{' '}
+        <a href="/social-media-image-sizes/">social media sizer</a> generates them all together
+        and hands you a ZIP.
+      </p>
+    </section>
+  </Fragment>
+</ToolPage>

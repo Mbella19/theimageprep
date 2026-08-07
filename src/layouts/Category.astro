@@ -1,0 +1,80 @@
+---
+import Base from './Base.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import AdSlot from '../components/AdSlot.astro';
+import { CATEGORIES, toolsInCategory, type Category } from '../data/tools';
+import { breadcrumbSchema, collectionPageSchema, type Crumb } from '../lib/schema';
+
+export interface Props {
+  category: Category;
+}
+
+const { category } = Astro.props;
+const tools = toolsInCategory(category.id);
+const path = `/${category.slug}/`;
+const otherCategories = CATEGORIES.filter((c) => c.id !== category.id);
+
+const crumbs: Crumb[] = [
+  { name: 'Home', path: '/' },
+  { name: category.name, path },
+];
+
+const schema = [
+  collectionPageSchema({
+    name: category.title,
+    description: category.description,
+    path,
+    items: tools.map((t) => ({ name: t.name, path: `/${t.slug}/` })),
+  }),
+  breadcrumbSchema(crumbs),
+];
+---
+
+<Base
+  title={category.title}
+  description={category.description}
+  path={path}
+  ogImage={`/og/${category.slug}.png`}
+  schema={schema}
+>
+  <Breadcrumbs crumbs={crumbs} />
+
+  <header class="page-head">
+    <h1>{category.h1}</h1>
+    <p class="page-head__blurb">{category.blurb}</p>
+  </header>
+
+  <ul class="tool-grid">
+    {
+      tools.map((tool) => (
+        <li>
+          <a class="tool-card" href={`/${tool.slug}/`}>
+            <span class="tool-card__name">{tool.name}</span>
+            <span class="tool-card__desc">{tool.blurb.split('.')[0]}.</span>
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+
+  {/* Page-specific prose lives here, below the tool list */}
+  <slot />
+
+  <AdSlot placement="belowContent" />
+
+  <section class="related">
+    <h2>Other tool categories</h2>
+    <ul class="tool-grid">
+      {
+        otherCategories.map((c) => (
+          <li>
+            <a class="tool-card" href={`/${c.slug}/`}>
+              <span class="tool-card__name">{c.name}</span>
+              <span class="tool-card__desc">{c.blurb.split('.')[0]}.</span>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+</Base>

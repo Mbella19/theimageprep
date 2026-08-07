@@ -1,0 +1,92 @@
+---
+import ToolPage from '../layouts/ToolPage.astro';
+import CompressImage from '../tools/CompressImage';
+import { getTool } from '../data/tools';
+
+const tool = getTool('compress-webp');
+---
+
+<ToolPage tool={tool}>
+  <CompressImage
+    slot="tool"
+    format="webp"
+    accept="image/webp,image/jpeg,image/png,.webp"
+    defaultQuality={80}
+    allowLossless={true}
+    client:load
+  />
+
+  <Fragment slot="content">
+    <section class="section">
+      <h2 id="how-it-works">How WebP compression works</h2>
+      <p>
+        WebP has two entirely separate modes inside one file format, and choosing the right one
+        matters more than any quality setting.
+      </p>
+      <p>
+        <strong>Lossy WebP</strong> works like a modern successor to JPEG. It predicts each block
+        of the image from its neighbours and stores only the difference, which is a considerably
+        more efficient approach than JPEG's. For photographs it typically produces a file 25-35%
+        smaller than JPEG at matched visual quality.
+      </p>
+      <p>
+        <strong>Lossless WebP</strong> works like a modern successor to PNG, using a mix of
+        colour transforms and entropy coding. It usually beats an optimised PNG by around 25%,
+        and unlike lossy mode it reproduces every pixel exactly.
+      </p>
+      <p>
+        Both modes support transparency, which is WebP's other significant advantage: a
+        photograph with a soft transparent edge can be a single small lossy WebP rather than a
+        large PNG.
+      </p>
+    </section>
+
+    <section class="section">
+      <h2 id="quality-scale">WebP quality numbers are not JPEG quality numbers</h2>
+      <p>
+        This trips people up constantly. The two scales are not comparable, and WebP is more
+        conservative: WebP at quality 80 looks roughly like JPEG at quality 85-90, and produces a
+        smaller file than either.
+      </p>
+      <p>
+        In practice, 80 is a good default for photographs, 70 is fine for images that display
+        small, and going above 90 rarely buys anything visible while the file grows quickly. If
+        you are converting an existing JPEG, do not try to match the number — start at 80 and
+        judge it by eye.
+      </p>
+    </section>
+
+    <section class="section">
+      <h2 id="where-to-use">Where WebP belongs, and where it does not</h2>
+      <p>
+        Use WebP on your own website, blog or portfolio. Every current browser has supported it
+        for years, page weight is a real ranking factor through Core Web Vitals, and it is the
+        single easiest performance win available for an image-heavy site.
+      </p>
+      <p>
+        Do not use it for marketplace listings. Etsy, Amazon and eBay all expect JPG or PNG, and
+        an upload form that rejects your file is a worse outcome than a slightly larger one. The
+        same applies to anything a client or printer will open in desktop software, where WebP
+        support remains patchy.
+      </p>
+      <p>
+        For those, convert back with the <a href="/png-to-jpg/">JPG converter</a> or keep a JPG
+        copy alongside.
+      </p>
+    </section>
+
+    <section class="section">
+      <h2 id="recompressing">A note on re-compressing</h2>
+      <p>
+        If you feed an existing lossy WebP into this tool, you are compressing something that has
+        already been compressed. The same generation loss that affects JPEG applies here: detail
+        discarded on the first pass cannot come back, and the second pass discards more.
+      </p>
+      <p>
+        Gains are also modest, because a well-encoded WebP has little left to give. If you want a
+        meaningfully smaller file, reducing the pixel dimensions with the{' '}
+        <a href="/resize-image/">resizer</a> will do far more than another round of compression.
+      </p>
+    </section>
+  </Fragment>
+</ToolPage>

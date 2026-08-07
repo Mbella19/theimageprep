@@ -1,0 +1,94 @@
+---
+import Page from '../layouts/Page.astro';
+import { SITE } from '../config';
+---
+
+<Page
+  title="Terms of Use"
+  description="The terms covering use of these free browser-based image tools, including the limits of what is warranted."
+  h1="Terms of use"
+  path="/terms/"
+  blurb="Plain terms for a free tool. Use it for anything lawful, keep your own backups, and understand that it comes with no warranty."
+  updated="2026-08-07"
+>
+  <h2>Using this site</h2>
+  <p>
+    {SITE.name} provides free image tools that run in your web browser. There is no account,
+    no subscription and no charge. By using the site you accept these terms.
+  </p>
+
+  <h2>What you may use it for</h2>
+  <p>
+    You may use these tools for personal and commercial work alike — product photographs, blog
+    images, client work, social posts, printing, anything. We claim no rights over anything you
+    process. Since your files are never transmitted to us, we could not acquire rights over them
+    even if we wanted to.
+  </p>
+  <p>You may not use the site to:</p>
+  <ul>
+    <li>Process material you do not have the right to process.</li>
+    <li>Produce content that is unlawful where you are, or where your audience is.</li>
+    <li>
+      Attempt to disrupt the site, or to automate access at a volume that degrades it for other
+      people.
+    </li>
+  </ul>
+
+  <h2>Keep your originals</h2>
+  <p>
+    These tools produce new files; they do not modify the originals on your device. Even so,
+    treat every operation as irreversible and keep your originals. Compression, cropping and
+    metadata removal all discard information that cannot be recovered from the output.
+  </p>
+
+  <h2>No warranty</h2>
+  <p>
+    The site is provided as it is, without any warranty of any kind, express or implied. That
+    includes any implied warranty of merchantability, fitness for a particular purpose, or
+    non-infringement. We do not warrant that the tools will be available, error-free, or that
+    any particular output will meet a platform's requirements.
+  </p>
+  <p>
+    Platform specifications — image sizes, file size ceilings, marketplace rules — are published
+    here in good faith and checked periodically, with the date of the last check shown where
+    relevant. Platforms change them without notice. Always confirm anything critical against the
+    platform's own documentation before relying on it.
+  </p>
+
+  <h2>Limitation of liability</h2>
+  <p>
+    To the fullest extent the law allows, {SITE.name} and its operator are not liable for any
+    loss or damage arising from your use of the site. That includes lost files, lost work, lost
+    revenue, a rejected listing, or a print that came out the wrong size. This is a free tool
+    with no server component; the responsibility for checking your output before you use it
+    rests with you.
+  </p>
+  <p>
+    Nothing in these terms excludes liability that cannot lawfully be excluded.
+  </p>
+
+  <h2>Advertising</h2>
+  <p>
+    The site may display advertising to cover its running costs. Advertisements are supplied by
+    third-party networks and their content is not endorsed by us. See the{' '}
+    <a href="/privacy-policy/">privacy policy</a> for how advertising interacts with your data.
+  </p>
+
+  <h2>Availability and changes</h2>
+  <p>
+    Tools may be added, changed or withdrawn at any time. The site may be unavailable for
+    maintenance or for reasons outside our control. No uptime is guaranteed.
+  </p>
+
+  <h2>Governing terms</h2>
+  <p>
+    If any part of these terms is found unenforceable, the rest continues to apply. Updates to
+    these terms will be reflected in the date at the top of this page.
+  </p>
+
+  <h2>Contact</h2>
+  <p>
+    Questions can go to <a href={`mailto:${SITE.email}`}>{SITE.email}</a> or via the{' '}
+    <a href="/contact/">contact page</a>.
+  </p>
+</Page>

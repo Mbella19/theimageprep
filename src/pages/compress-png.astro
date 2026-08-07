@@ -1,0 +1,94 @@
+---
+import ToolPage from '../layouts/ToolPage.astro';
+import CompressPng from '../tools/CompressPng';
+import { getTool } from '../data/tools';
+
+const tool = getTool('compress-png');
+---
+
+<ToolPage tool={tool}>
+  <CompressPng slot="tool" client:load />
+
+  <Fragment slot="content">
+    <section class="section">
+      <h2 id="how-it-works">Two different things called "PNG compression"</h2>
+      <p>
+        PNG is a lossless format. Its compression works the way a ZIP file does: it finds repeated
+        patterns and stores them more efficiently, and the pixels you get back are exactly the
+        pixels that went in. That places a hard ceiling on how much can be saved without changing
+        the image, and that ceiling is usually somewhere between 10% and 30%.
+      </p>
+      <p>
+        So when a website advertises 70% savings on PNG files, it is not doing lossless
+        compression. It is reducing the number of colours in the image — replacing thousands of
+        subtly different shades with a palette of a few hundred — and calling the result
+        compression. That technique is genuinely excellent for the kind of images PNG is designed
+        for, but it does change the picture, and you deserve to know which one you are getting.
+      </p>
+      <p>This tool separates them:</p>
+      <ul>
+        <li>
+          <strong>Lossless</strong> runs the file through OxiPNG, which searches for a more
+          efficient encoding of identical pixel data. Typical saving: 10-30%. The output is
+          pixel-for-pixel identical to the input.
+        </li>
+        <li>
+          <strong>Reduce colours</strong> rebuilds the image from a smaller palette using median
+          cut, with optional dithering. Typical saving: 60-80%. The image changes, usually
+          imperceptibly on graphics.
+        </li>
+      </ul>
+    </section>
+
+    <section class="section">
+      <h2 id="when-to-reduce">When colour reduction works, and when it does not</h2>
+      <p>
+        Colour reduction is close to free quality-wise on images that only ever contained a
+        handful of colours in the first place. A logo with four brand colours, a screenshot of a
+        user interface, a flat illustration, a chart, an icon — all of these can drop to 64 or
+        even 32 colours with no visible difference at all, while the file collapses to a fraction
+        of its original size.
+      </p>
+      <p>
+        It works badly on photographs. A photograph contains tens of thousands of distinct
+        colours in every smooth gradient, and forcing those into 256 slots produces visible
+        banding across skies and skin. If your PNG is a photograph, the honest answer is that it
+        should not be a PNG at all — <a href="/compress-jpg/">JPG</a> or{' '}
+        <a href="/compress-webp/">WebP</a> will be several times smaller at better quality.
+      </p>
+    </section>
+
+    <section class="section">
+      <h2 id="dithering">What dithering does</h2>
+      <p>
+        When you reduce a smooth gradient to a small palette, the gradient turns into visible
+        stripes, because a range of shades that used to be continuous now has to snap to a few
+        fixed values. Dithering scatters pixels between the two nearest available colours in a
+        fine pattern, and from normal viewing distance your eye blends them back into the shade
+        that is missing.
+      </p>
+      <p>
+        The cost is file size: that fine scattered pattern is noisier and therefore less
+        compressible than a flat area, so a dithered PNG is typically 10-20% larger than an
+        undithered one at the same palette size. Turn it on for anything with gradients, soft
+        shadows or subtle lighting. Turn it off for flat graphics, where it only adds noise to
+        areas that were perfectly smooth to begin with.
+      </p>
+    </section>
+
+    <section class="section">
+      <h2 id="transparency">Transparency is preserved</h2>
+      <p>
+        Both modes keep the alpha channel intact, including partial transparency. That matters
+        for anti-aliased edges: the smooth boundary of a rounded logo is made of semi-transparent
+        pixels, and a tool that flattens alpha to fully-on or fully-off leaves you with visibly
+        jagged edges.
+      </p>
+      <p>
+        If you need to remove transparency deliberately — because a marketplace requires a solid
+        white background, for instance — use the <a href="/png-to-jpg/">PNG to JPG converter</a>,
+        which lets you choose the colour that replaces it.
+      </p>
+    </section>
+  </Fragment>
+</ToolPage>

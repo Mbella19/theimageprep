@@ -1,0 +1,20 @@
+# build output
+dist/
+.astro/
+
+# dependencies
+node_modules/
+
+# generated test fixtures — recreate with `npm run fixtures`
+tests/fixtures/
+
+# environment
+.env
+.env.production
+
+# editor / OS
+.DS_Store
+.vscode/
+.idea/
+*.log
+npm-debug.log*

@@ -1,0 +1,118 @@
+---
+import ToolPage from '../layouts/ToolPage.astro';
+import RemoveExif from '../tools/RemoveExif';
+import { getTool } from '../data/tools';
+
+const tool = getTool('remove-exif-data');
+---
+
+<ToolPage tool={tool}>
+  <RemoveExif slot="tool" client:load />
+
+  <Fragment slot="content">
+    <section class="section">
+      <h2 id="what-is-exif">What your photos are actually carrying</h2>
+      <p>
+        Every photograph taken on a phone or a camera arrives with a block of metadata attached.
+        Some of it is harmless, some of it is genuinely revealing, and almost nobody has looked
+        at it.
+      </p>
+      <ul>
+        <li>
+          <strong>GPS coordinates.</strong> If location services were on, the file records where
+          the photo was taken, typically to within a few metres. This is the one that matters. A
+          photograph of an item for sale, taken at home, tells a buyer your address.
+        </li>
+        <li>
+          <strong>Date and time.</strong> The exact moment of capture, to the second.
+        </li>
+        <li>
+          <strong>Camera and lens.</strong> Make, model, and often the body serial number, which
+          links every photo you have ever published to the same physical camera.
+        </li>
+        <li>
+          <strong>Software history.</strong> Which application edited the file, sometimes with
+          version numbers.
+        </li>
+        <li>
+          <strong>An embedded thumbnail.</strong> Some editors leave the original thumbnail in
+          place after a crop, so the pre-crop image can still be recovered from the file.
+        </li>
+      </ul>
+      <p>
+        Drop a photo above and you will see exactly which of these your file contains, with a map
+        link for any coordinates. That reading happens on your device — the file is not sent
+        anywhere to be examined.
+      </p>
+    </section>
+
+    <section class="section">
+      <h2 id="lossless">Why this does not reduce your image quality</h2>
+      <p>
+        This is the part most tools get wrong, and it is worth understanding because it is
+        checkable.
+      </p>
+      <p>
+        A JPEG file is a sequence of labelled segments. Some hold the compressed picture data,
+        others hold metadata — EXIF, XMP, colour profiles, comments. The typical online tool
+        removes metadata by decoding the entire image into pixels and then saving a brand new
+        JPEG. That works, but it re-compresses every pixel, costing a generation of quality to
+        delete a few kilobytes of text.
+      </p>
+      <p>
+        This tool never decodes anything. It walks the segment structure, copies the compressed
+        picture data across byte for byte, and simply omits the metadata segments. The pixels
+        that come out are mathematically identical to the pixels that went in — not visually
+        similar, identical. The same approach is used for PNG, where metadata lives in named
+        chunks, and for WebP, where it lives in RIFF chunks.
+      </p>
+      <p>
+        The one exception is the colour profile, which is kept by default. It is technically
+        metadata, but removing it changes how displays interpret your colours and can make images
+        look washed out or oversaturated on wide-gamut screens. There is a switch if you want it
+        gone.
+      </p>
+    </section>
+
+    <section class="section">
+      <h2 id="platforms">Do social networks strip this for you?</h2>
+      <p>
+        Some do, some do not, and the behaviour changes without notice — so it is not something
+        to rely on.
+      </p>
+      <p>
+        The large social platforms generally do strip EXIF from uploaded photos, partly for
+        privacy and partly because re-encoding for their own delivery pipeline discards it
+        anyway. But that only covers photos posted to those platforms. Metadata usually survives
+        when you send a file as an email attachment, share it through a messaging app in "file"
+        or "document" mode rather than as a photo, upload it to a marketplace listing, put it on
+        your own website, or share a cloud storage link.
+      </p>
+      <p>
+        Those are precisely the routes people use for selling and for client work. Strip it
+        yourself rather than hoping.
+      </p>
+    </section>
+
+    <section class="section">
+      <h2 id="limits">What removing metadata does not do</h2>
+      <p>
+        It is worth being clear about the boundary, because "removing EXIF" is sometimes treated
+        as anonymity, and it is not.
+      </p>
+      <p>
+        The image itself still shows what it shows. A recognisable street, a house number, a
+        reflection in a window, a distinctive view from a window — these identify a location far
+        more reliably than coordinates, and no metadata tool touches them.
+      </p>
+      <p>
+        Removing metadata also does nothing about copies already shared. If a photo with GPS data
+        is already online, cleaning your local copy changes nothing about theirs.
+      </p>
+      <p>
+        What it does do is close the easiest and most automated route: reading a location straight
+        out of a file, at scale, without looking at the picture at all.
+      </p>
+    </section>
+  </Fragment>
+</ToolPage>

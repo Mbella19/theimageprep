@@ -1,0 +1,140 @@
+---
+import ToolPage from '../layouts/ToolPage.astro';
+import ChangeDpi from '../tools/ChangeDpi';
+import { getTool } from '../data/tools';
+
+const tool = getTool('change-image-dpi');
+---
+
+<ToolPage tool={tool}>
+  <ChangeDpi slot="tool" client:load />
+
+  <Fragment slot="content">
+    <section class="section">
+      <h2 id="what-dpi-is">DPI is a label, not a quality setting</h2>
+      <p>
+        This is the single most misunderstood number in digital imaging, and clearing it up makes
+        everything else straightforward.
+      </p>
+      <p>
+        An image file contains a grid of pixels. That is all it contains. A photo that is 3000 by
+        2000 pixels has exactly the same information whether it is labelled 72 DPI or 300 DPI —
+        changing the label does not add or remove a single pixel.
+      </p>
+      <p>
+        What DPI records is an <em>instruction about physical size</em>: how many of those pixels
+        should be packed into each inch of paper. At 300 DPI, a 3000 pixel wide image prints 10
+        inches wide. At 150 DPI, the same file prints 20 inches wide — bigger, and correspondingly
+        coarser, from identical data.
+      </p>
+      <p>
+        So when a printer asks for 300 DPI, they are really asking for two things: enough pixels
+        for the size you want, and a label that tells their software how to place them. Only the
+        first affects quality.
+      </p>
+    </section>
+
+    <section class="section">
+      <h2 id="why-it-fails">Why DPI changes made elsewhere often do nothing</h2>
+      <p>
+        This is the specific bug this tool exists to fix, and it has a precise cause.
+      </p>
+      <p>
+        A JPEG can record its resolution in two entirely separate places. One is the JFIF header,
+        an old and simple structure near the start of the file with fields for horizontal and
+        vertical density. The other is inside the EXIF block, as the tags{' '}
+        <code>XResolution</code>, <code>YResolution</code> and <code>ResolutionUnit</code>.
+      </p>
+      <p>
+        Most online DPI tools write only the JFIF fields. Photoshop, InDesign and Word read the
+        EXIF tags. So the tool reports success, the file genuinely changed, and when you open it
+        in the program that matters it still says 72 DPI — because the EXIF value was never
+        touched and is still sitting there.
+      </p>
+      <p>
+        This tool writes both, and forces the EXIF resolution unit to inches so the number cannot
+        be reinterpreted as dots per centimetre. If the file has no JFIF header at all, one is
+        inserted. The result reads consistently everywhere.
+      </p>
+    </section>
+
+    <section class="section">
+      <h2 id="how-many-pixels">How many pixels do you actually need?</h2>
+      <p>Multiply the print size in inches by the DPI you are targeting.</p>
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th>Print size</th>
+              <th>At 150 DPI</th>
+              <th>At 300 DPI</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>4 x 6 inches</td>
+              <td>600 x 900</td>
+              <td>1200 x 1800</td>
+            </tr>
+            <tr>
+              <td>8 x 10 inches</td>
+              <td>1200 x 1500</td>
+              <td>2400 x 3000</td>
+            </tr>
+            <tr>
+              <td>A4 (8.27 x 11.7 in)</td>
+              <td>1240 x 1754</td>
+              <td>2480 x 3508</td>
+            </tr>
+            <tr>
+              <td>A3 (11.7 x 16.5 in)</td>
+              <td>1754 x 2480</td>
+              <td>3508 x 4961</td>
+            </tr>
+            <tr>
+              <td>Business card (3.5 x 2 in)</td>
+              <td>525 x 300</td>
+              <td>1050 x 600</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p>
+        If your image has fewer pixels than the 300 DPI column, relabelling it will not help.
+        Either print smaller, accept 150 DPI (perfectly acceptable for anything viewed at more
+        than arm's length, including most posters), or start from a higher-resolution original.
+      </p>
+    </section>
+
+    <section class="section">
+      <h2 id="modes">Label only, or resample?</h2>
+      <p>
+        <strong>Label only</strong> changes the recorded resolution and leaves every pixel
+        untouched. The file is byte-identical apart from a few resolution fields, so there is no
+        quality cost at all. The physical print size changes. This is what a printer asking for
+        "300 DPI" almost always means.
+      </p>
+      <p>
+        <strong>Resample</strong> adds or removes pixels so the image prints at the same physical
+        size at the new resolution. Going from 72 to 300 DPI this way multiplies the pixel count
+        by more than seventeen, all of it interpolated from data that was never captured. The
+        file gets much larger and the image gets softer. It is occasionally the right answer, but
+        it is rarely what people want when they arrive here.
+      </p>
+    </section>
+
+    <section class="section">
+      <h2 id="dpi-vs-ppi">DPI and PPI</h2>
+      <p>
+        Strictly speaking, PPI (pixels per inch) describes a digital image and DPI (dots per inch)
+        describes the ink dots a printer physically places on paper — and a printer typically uses
+        many ink dots to reproduce one image pixel.
+      </p>
+      <p>
+        In everyday use the two terms are interchangeable, and every image editor labels the field
+        one way or the other without meaning anything different by it. This tool writes the field
+        both terms refer to, so whichever your printer asks for, this is it.
+      </p>
+    </section>
+  </Fragment>
+</ToolPage>

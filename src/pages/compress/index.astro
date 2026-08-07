@@ -1,0 +1,71 @@
+---
+import CategoryLayout from '../../layouts/Category.astro';
+import { getCategory } from '../../data/tools';
+
+const category = getCategory('compress');
+---
+
+<CategoryLayout category={category}>
+  <section class="section">
+    <h2>Which compressor do you need?</h2>
+    <p>
+      Start from what the file already is, not from what you want it to become. Each format
+      compresses in a fundamentally different way, and using the wrong tool wastes most of the
+      available saving.
+    </p>
+    <ul>
+      <li>
+        <a href="/compress-jpg/">Compress JPG</a> — photographs, camera images, anything already
+        a .jpg or .jpeg. Supports compressing to an exact target file size.
+      </li>
+      <li>
+        <a href="/compress-png/">Compress PNG</a> — logos, screenshots, icons, illustrations, and
+        anything with transparency. Offers both genuinely lossless optimisation and colour
+        reduction.
+      </li>
+      <li>
+        <a href="/compress-webp/">Compress WebP</a> — files already in WebP, with lossy and
+        lossless modes.
+      </li>
+    </ul>
+    <p>
+      If your image is in the wrong format for its content — a photograph saved as PNG is the
+      classic case — converting it will save far more than compressing it. The{' '}
+      <a href="/convert/">converters</a> handle that.
+    </p>
+  </section>
+
+  <section class="section">
+    <h2>Compressing to a specific file size</h2>
+    <p>
+      Real limits arrive in megabytes, not quality units: under 2 MB for a YouTube thumbnail
+      uploaded from a phone, under 5 MB for an attachment, under 1 MB for a listing photo. Most
+      free compressors only give you a quality slider and leave you re-checking the file size by
+      hand.
+    </p>
+    <p>
+      The JPG and WebP compressors here have a target size mode. Type the limit and the tool
+      searches for the highest quality that fits underneath it, normally settling in six to eight
+      attempts.
+    </p>
+    <p>
+      When a target is genuinely out of reach, the answer is dimensions rather than quality. File
+      size scales with pixel count, so halving the width and height leaves roughly a quarter of
+      the file. <a href="/resize-image/">Resize first</a>, then compress.
+    </p>
+  </section>
+
+  <section class="section">
+    <h2>What compression cannot do</h2>
+    <p>
+      Compression discards information. On a photograph at a sensible setting that loss is
+      invisible, but it is permanent, and it accumulates: every save of a JPEG throws away a
+      little more. Always compress from the highest-quality original you have rather than from a
+      copy that has already been through the process.
+    </p>
+    <p>
+      It also cannot rescue an image that is already heavily compressed. If a file has been
+      through several rounds, another pass will barely shrink it and may make it visibly worse.
+    </p>
+  </section>
+</CategoryLayout>

@@ -1,0 +1,66 @@
+---
+/**
+ * An AdSense placement.
+ *
+ * Renders NOTHING until `SITE.adsense.enabled` is true and a publisher ID and
+ * slot ID are set. The site therefore launches completely ad-free, which is
+ * what you want while building up content for the AdSense application.
+ *
+ * ─── PLACEMENT RULES (from Google's ad placement policies) ────────────────────
+ * Google prohibits ads that "overlay or are adjacent to navigational or other
+ * action items" because they cause unintended clicks. In practice that means:
+ *
+ *   NEVER place this next to the dropzone, the process button, quality controls,
+ *   or any download link. An accidental-click layout risks the whole account,
+ *   not just the placement.
+ *
+ * Safe placements, all used by ToolPage.astro:
+ *   - after the explanatory content that follows the tool
+ *   - between long-form content sections
+ *   - above the footer
+ *
+ * Google also prohibits ads on pages without substantial publisher content, and
+ * placements where ads outweigh content on screen. Do not add slots to /404/,
+ * /contact/, or any thin page.
+ */
+import { SITE } from '../config';
+
+export interface Props {
+  /** Named `placement`, not `slot` — `slot` is reserved by Astro for content
+   *  projection and would be swallowed as a slot assignment. */
+  placement: keyof typeof SITE.adsense.slots;
+  variant?: 'rectangle' | 'leaderboard';
+  format?: string;
+}
+
+const { placement, variant = 'rectangle', format = 'auto' } = Astro.props;
+
+const slotId = SITE.adsense.slots[placement];
+const enabled = SITE.adsense.enabled && Boolean(SITE.adsense.client) && Boolean(slotId);
+---
+
+{
+  enabled && (
+    <aside
+      class={`ad-slot ${variant === 'leaderboard' ? 'ad-slot--leaderboard' : ''}`}
+      aria-label="Advertisement"
+    >
+      <div>
+        {/* Google requires ads to be clearly distinguishable from content.
+            "Advertisement" is one of the explicitly permitted labels. */}
+        <div class="ad-slot__label">Advertisement</div>
+        <ins
+          class="adsbygoogle"
+          style="display:block"
+          data-ad-client={SITE.adsense.client}
+          data-ad-slot={slotId}
+          data-ad-format={format}
+          data-full-width-responsive="true"
+        />
+      </div>
+      <script is:inline>
+        (window.adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+    </aside>
+  )
+}

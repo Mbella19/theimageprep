@@ -1,0 +1,32 @@
+---
+import Page from '../layouts/Page.astro';
+import { CATEGORIES } from '../data/tools';
+---
+
+<Page
+  title="Page not found"
+  description="That page does not exist. Browse the image tools instead."
+  h1="Page not found"
+  path="/404/"
+  blurb="That URL does not exist here. It may have moved, or the link that brought you may have a typo in it."
+  noindex={true}
+  showBreadcrumbs={false}
+>
+  <p>Here is where everything lives:</p>
+
+  <ul>
+    {CATEGORIES.map((c) => (
+      <li>
+        <a href={`/${c.slug}/`}>{c.name}</a> — {c.blurb.split('.')[0]}.
+      </li>
+    ))}
+    <li><a href="/guides/">Guides</a> — the size and format rules for each platform.</li>
+  </ul>
+
+  <p>
+    Or start from the <a href="/">list of all image tools</a>. If you followed a link from
+    somewhere on this site and it broke, <a href="/contact/">tell us</a> and it will get fixed.
+  </p>
+
+  {/* No ad slots here. Google prohibits ads on pages without substantial content. */}
+</Page>

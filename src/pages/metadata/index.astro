@@ -1,0 +1,57 @@
+---
+import CategoryLayout from '../../layouts/Category.astro';
+import { getCategory } from '../../data/tools';
+
+const category = getCategory('metadata');
+---
+
+<CategoryLayout category={category}>
+  <section class="section">
+    <h2>Both of these tools are genuinely lossless</h2>
+    <p>
+      An image file is not just pixels. It is a container: labelled blocks holding the compressed
+      picture data alongside separate blocks holding metadata — camera details, GPS coordinates,
+      colour profiles, print resolution.
+    </p>
+    <p>
+      That structure means metadata can be edited without touching the picture at all. Both tools
+      here walk the container, copy the compressed image data across byte for byte, and rewrite
+      only the small blocks around it. The pixels that come out are mathematically identical to
+      the pixels that went in.
+    </p>
+    <p>
+      Most online tools do not work this way. They decode the whole image and save a new file,
+      which re-compresses every pixel — spending a generation of JPEG quality to delete a few
+      kilobytes of text, or to change a number describing print size.
+    </p>
+  </section>
+
+  <section class="section">
+    <h2>See what is in your photos before you decide</h2>
+    <p>
+      The <a href="/remove-exif-data/">EXIF viewer</a> shows you the contents of a file before it
+      removes anything: camera make and model, the exact capture time, editing software, serial
+      numbers, and GPS coordinates with a map link.
+    </p>
+    <p>
+      That ordering is deliberate. "Remove metadata" is an abstraction most people cannot
+      evaluate. "This photo says it was taken at these coordinates, at this time, on this camera"
+      is something you can act on.
+    </p>
+  </section>
+
+  <section class="section">
+    <h2>The DPI bug worth knowing about</h2>
+    <p>
+      A JPEG records its print resolution in two independent places: the JFIF header and the EXIF
+      resolution tags. Nearly every online DPI tool writes only the first. Photoshop and Word read
+      the second, find the old value still there, and display it — so the change appears to have
+      silently failed.
+    </p>
+    <p>
+      <a href="/change-image-dpi/">The DPI tool here</a> writes both, and inserts a JFIF header if
+      the file lacks one. It also shows the resulting print size in inches and centimetres as you
+      change the value, because DPI on its own tells you very little.
+    </p>
+  </section>
+</CategoryLayout>

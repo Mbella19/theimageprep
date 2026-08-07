@@ -1,0 +1,23 @@
+---
+import type { Crumb } from '../lib/schema';
+
+export interface Props {
+  crumbs: Crumb[];
+}
+
+const { crumbs } = Astro.props;
+---
+
+<nav class="breadcrumbs" aria-label="Breadcrumb">
+  <ol>
+    {
+      crumbs.map((crumb, i) =>
+        i === crumbs.length - 1 ? (
+          <li><span aria-current="page">{crumb.name}</span></li>
+        ) : (
+          <li><a href={crumb.path}>{crumb.name}</a></li>
+        ),
+      )
+    }
+  </ol>
+</nav>

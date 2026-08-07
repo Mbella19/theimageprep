@@ -1,0 +1,13 @@
+{
+  "extends": "astro/tsconfigs/strict",
+  "include": [".astro/types.d.ts", "**/*"],
+  "exclude": ["dist", "node_modules"],
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "jsxImportSource": "preact",
+    "strictNullChecks": true,
+    "allowJs": true,
+    "types": ["vitest/globals"],
+    "lib": ["ES2022", "DOM", "DOM.Iterable", "WebWorker"]
+  }
+}

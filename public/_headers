@@ -1,0 +1,47 @@
+# Cloudflare Pages headers.
+#
+# ─── DELIBERATELY ABSENT: Cross-Origin-Embedder-Policy ────────────────────────
+# COEP + COOP would enable SharedArrayBuffer and multi-threaded WebAssembly, and
+# it is tempting for an image-processing site. Do not add them here:
+#
+#   1. The jSquash codecs used on this site are single-threaded builds and do
+#      not need SharedArrayBuffer.
+#   2. Cross-origin isolation blocks third-party iframes that do not opt in,
+#      which breaks Google AdSense completely.
+#
+# ─── DELIBERATELY ABSENT: Content-Security-Policy ─────────────────────────────
+# AdSense loads from a wide and changing set of Google domains. A CSP that is
+# even slightly wrong fails silently and stops ads rendering, with no error that
+# points at the cause. Add one only after ads are live and verified, and test it
+# on a preview deployment first.
+
+# Hashed build assets never change content, so cache them forever. Astro emits
+# every JS bundle and every WASM codec here with a content hash in the filename,
+# so this one rule covers all of them.
+#
+# There used to be separate `/*.wasm` and `/*.js` rules as well. Both matched the
+# same files as this rule, and Cloudflare Pages CONCATENATES matching rules, so
+# the live response carried a doubled header:
+#   Cache-Control: public, max-age=31536000, immutable, public, max-age=…
+# Harmless, but `/*.js` was also a trap: it matches any path depth, so any
+# non-hashed script added at the root would silently become uncacheable-away for
+# a year. If a JS or WASM file ever ships outside /_astro/, give it its own rule
+# rather than reintroducing a global glob.
+/_astro/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# Icons change rarely but are not content-hashed, so cache for a day.
+/favicon.ico
+  Cache-Control: public, max-age=86400
+/favicon.svg
+  Cache-Control: public, max-age=86400
+/apple-touch-icon.png
+  Cache-Control: public, max-age=86400
+
+/*
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  X-Frame-Options: SAMEORIGIN
+  # This site never needs any of these. Denying them is a clear signal that a
+  # tool asking you to drop private photos onto it is not reaching for hardware.
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=()

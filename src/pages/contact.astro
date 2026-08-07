@@ -1,0 +1,66 @@
+---
+import Page from '../layouts/Page.astro';
+import { SITE } from '../config';
+---
+
+<Page
+  title="Contact"
+  description="Report a bug, correct an out-of-date platform specification, or suggest a tool. Email only, no form and no tracking."
+  h1="Contact"
+  path="/contact/"
+  blurb="One email address, read by a person. There is no form here because a form would need a server, and this site deliberately does not have one."
+>
+  <p style="font-size: var(--step-2); font-weight: 600; margin-top: var(--space-6)">
+    <a href={`mailto:${SITE.email}`}>{SITE.email}</a>
+  </p>
+
+  <h2>Especially useful to hear about</h2>
+
+  <h3>A platform specification that has changed</h3>
+  <p>
+    Image size requirements move without announcement, and an out-of-date number here is worse
+    than no number at all. If a preset or a guide is wrong, tell us which one and what it should
+    be. A link to the platform's own documentation makes the fix immediate.
+  </p>
+
+  <h3>A file that will not process</h3>
+  <p>
+    If a tool fails on one of your files, the useful details are: which tool, what the file came
+    from (which camera, phone or program made it), which browser you are using, and any message
+    that appeared. Please do not attach the file to a first email — describe it instead, and we
+    will ask if we need more.
+  </p>
+
+  <h3>A result that looks wrong</h3>
+  <p>
+    Rotated output, shifted colours, a DPI value that did not take effect, transparency that
+    turned black — these are bugs, and specific reports are what fix them.
+  </p>
+
+  <h3>A tool that should exist</h3>
+  <p>
+    Suggestions are welcome, particularly if you can describe the actual task you were trying to
+    complete rather than the feature you imagined. The task is usually more informative.
+  </p>
+
+  <h2>What we cannot help with</h2>
+  <ul>
+    <li>
+      Recovering a file. Nothing you process is ever sent to us, so there is no copy on our side
+      to retrieve.
+    </li>
+    <li>
+      Account problems on Etsy, Amazon, eBay, YouTube or anywhere else. We have no relationship
+      with those companies.
+    </li>
+    <li>Editing your images for you.</li>
+  </ul>
+
+  <h2>Response times</h2>
+  <p>
+    This is a small project rather than a company with a support desk. Email gets read, and
+    genuine bug reports get priority, but a reply may take a few days.
+  </p>
+
+  {/* Deliberately no ad slots: Google prohibits ads on thin utility pages. */}
+</Page>

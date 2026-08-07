@@ -1,0 +1,17 @@
+---
+/**
+ * Renders a structured-data block.
+ *
+ * The `<` escaping is not decorative: a description containing the literal
+ * string "</script>" would otherwise terminate the block early and break the
+ * page. JSON.stringify does not escape it, so we do.
+ */
+export interface Props {
+  schema: Record<string, unknown> | Record<string, unknown>[];
+}
+
+const { schema } = Astro.props;
+const json = JSON.stringify(schema).replace(/</g, '\\u003c');
+---
+
+<script type="application/ld+json" is:inline set:html={json} />

@@ -1,0 +1,70 @@
+---
+import Seo from '../components/Seo.astro';
+import JsonLd from '../components/JsonLd.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { SITE } from '../config';
+import '../styles/global.css';
+
+export interface Props {
+  title: string;
+  description: string;
+  path: string;
+  ogImage?: string;
+  type?: 'website' | 'article';
+  noindex?: boolean;
+  publishedTime?: string;
+  modifiedTime?: string;
+  schema?: Record<string, unknown> | Record<string, unknown>[];
+}
+
+const { schema, ...seo } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <Seo {...seo} />
+    {schema && <JsonLd schema={schema} />}
+
+    {/*
+      AdSense loader. Absent entirely until you enable ads in src/config.ts.
+
+      Note there is deliberately NO Cross-Origin-Embedder-Policy on this site:
+      it would block AdSense's third-party frames, and the WASM codecs we use
+      are single-threaded and do not need SharedArrayBuffer.
+    */}
+    {
+      SITE.adsense.enabled && SITE.adsense.client && (
+        <script
+          async
+          src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${SITE.adsense.client}`}
+          crossorigin="anonymous"
+          is:inline
+        />
+      )
+    }
+
+    {
+      SITE.analytics.plausibleDomain && (
+        <script
+          defer
+          data-domain={SITE.analytics.plausibleDomain}
+          src="https://plausible.io/js/script.js"
+          is:inline
+        />
+      )
+    }
+  </head>
+
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <Header />
+    <main id="main">
+      <div class="container">
+        <slot />
+      </div>
+    </main>
+    <Footer />
+  </body>
+</html>

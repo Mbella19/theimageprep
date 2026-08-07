@@ -1,0 +1,94 @@
+# ─────────────────────────────────────────────────────────────────────────────
+#  Caddy config for serving this site from a VPS.
+#
+#  Caddy is the recommended server here because it obtains and renews a Let's
+#  Encrypt certificate on its own — no certbot, no cron job, no renewal that
+#  quietly expires eighteen months later.
+#
+#  Production:
+#      sudo caddy run --config /var/www/theimageprep/deploy/Caddyfile
+#  (or point /etc/caddy/Caddyfile at this file — see docs/vps-deploy.md)
+#
+#  Local test, no TLS, no root:
+#      SITE_ADDRESS=:8088 SITE_ROOT=./dist caddy run --config deploy/Caddyfile
+#
+#  The defaults below are the production values, so on the server you set
+#  nothing at all.
+# ─────────────────────────────────────────────────────────────────────────────
+
+{$SITE_ADDRESS:theimageprep.com} {
+	root * {$SITE_ROOT:/var/www/theimageprep/dist}
+
+	# zstd and gzip both help a lot here: the WASM codecs are a few hundred KB
+	# each and compress to roughly a third.
+	encode zstd gzip
+
+	# ─── Headers ────────────────────────────────────────────────────────────
+	# These mirror public/_headers, which ONLY Cloudflare Pages reads. Nothing
+	# in this repo applies them on a VPS, so they have to be restated here. If
+	# you change one, change both.
+	header {
+		X-Content-Type-Options nosniff
+		Referrer-Policy strict-origin-when-cross-origin
+		X-Frame-Options SAMEORIGIN
+		Permissions-Policy "camera=(), microphone=(), geolocation=(), payment=(), usb=()"
+		# Do not advertise the server version.
+		-Server
+	}
+
+	# ─── DELIBERATELY ABSENT: Cross-Origin-Embedder-Policy / -Opener-Policy ──
+	# Cross-origin isolation unlocks multi-threaded WebAssembly, which looks
+	# very attractive for an image site. Do not add it. The jSquash codecs here
+	# are single-threaded builds that gain nothing from it, and COEP blocks
+	# third-party iframes, which breaks AdSense completely.
+
+	# Content-hashed build output — filename changes whenever bytes change.
+	@immutable path /_astro/*
+	header @immutable Cache-Control "public, max-age=31536000, immutable"
+
+	# Icons are stable but NOT content-hashed, so a year would strand them.
+	@icons path /favicon.ico /favicon.svg /apple-touch-icon.png /android-chrome-*.png /favicon-*.png
+	header @icons Cache-Control "public, max-age=86400"
+
+	# HTML must revalidate, or a redeploy stays invisible to returning visitors
+	# until their cache expires. This is the most common static-hosting mistake
+	# and it is completely silent.
+	#
+	# Two matchers, not one: conditions inside a single named-matcher block are
+	# ANDed, so `path *.html /` combined with a path_regexp matched nothing at
+	# all and HTML shipped with no Cache-Control header whatsoever.
+	#
+	# The site builds with trailingSlash:'always' and format:'directory', so
+	# every page URL ends in "/" — that regexp covers the homepage and all 34
+	# other pages. The *.html rule catches /404.html when served directly.
+	@htmldir path_regexp ^.*/$
+	header @htmldir Cache-Control "public, max-age=0, must-revalidate"
+
+	@htmlfile path *.html
+	header @htmlfile Cache-Control "public, max-age=0, must-revalidate"
+
+	# WASM is served from /_astro/ and already covered above, but be explicit:
+	# an incorrect Content-Type makes WebAssembly.instantiateStreaming fail and
+	# every single tool breaks with no visible clue why.
+	@wasm path *.wasm
+	header @wasm Content-Type "application/wasm"
+
+	# ─── 404 ────────────────────────────────────────────────────────────────
+	# Must return a real 404 status. Serving the 404 page with a 200 creates
+	# "soft 404s", which Google treats as a quality problem across the site.
+	handle_errors {
+		rewrite * /404.html
+		file_server {
+			status {err.status_code}
+		}
+	}
+
+	file_server
+}
+
+# ─── www → apex, 301 ─────────────────────────────────────────────────────────
+# Every canonical tag on the site points at the apex, so www must redirect
+# rather than serve a second copy of all 35 pages.
+{$WWW_ADDRESS:www.theimageprep.com} {
+	redir {$APEX_URL:https://theimageprep.com}{uri} permanent
+}

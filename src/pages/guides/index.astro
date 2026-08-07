@@ -1,0 +1,60 @@
+---
+import Base from '../../layouts/Base.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import { getCollection } from 'astro:content';
+import { breadcrumbSchema, collectionPageSchema, type Crumb } from '../../lib/schema';
+
+const guides = (await getCollection('guides')).sort((a, b) => a.data.order - b.data.order);
+
+const crumbs: Crumb[] = [
+  { name: 'Home', path: '/' },
+  { name: 'Guides', path: '/guides/' },
+];
+---
+
+<Base
+  title="Image Size Guides for Sellers and Creators"
+  description="What Etsy, Amazon, eBay, YouTube and Instagram actually require from your images, and why uploads get rejected."
+  path="/guides/"
+  schema={[
+    collectionPageSchema({
+      name: 'Image size guides',
+      description:
+        'Platform image requirements explained, with the tools to meet them.',
+      path: '/guides/',
+      items: guides.map((g) => ({ name: g.data.h1, path: `/guides/${g.id}/` })),
+    }),
+    breadcrumbSchema(crumbs),
+  ]}
+>
+  <Breadcrumbs crumbs={crumbs} />
+
+  <header class="page-head">
+    <h1>Image guides</h1>
+    <p class="page-head__blurb">
+      What each platform actually asks for, why uploads get rejected, and the handful of technical
+      details — DPI, EXIF, formats — that cause the most confusion.
+    </p>
+  </header>
+
+  <ul class="tool-grid">
+    {
+      guides.map((guide) => (
+        <li>
+          <a class="tool-card" href={`/guides/${guide.id}/`}>
+            <span class="tool-card__name">{guide.data.h1}</span>
+            <span class="tool-card__desc">{guide.data.blurb}</span>
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+
+  <section class="section" style="margin-top: var(--space-9)">
+    <h2>Or go straight to a tool</h2>
+    <p>
+      Every guide links to the tools that do the job. If you already know what you need, the{' '}
+      <a href="/">full tool list</a> is on the homepage.
+    </p>
+  </section>
+</Base>

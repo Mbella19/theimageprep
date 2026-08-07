@@ -1,0 +1,159 @@
+---
+import Page from '../layouts/Page.astro';
+import { SITE } from '../config';
+---
+
+<Page
+  title="Privacy Policy"
+  description="What this site does and does not collect. Images are processed entirely in your browser and are never uploaded to any server."
+  h1="Privacy policy"
+  path="/privacy-policy/"
+  blurb="The short version: your images never leave your device, and there is no account system, so there is very little about you for us to hold."
+  updated="2026-08-07"
+>
+  <h2>The images you process</h2>
+  <p>
+    Every tool on {SITE.name} runs inside your web browser using WebAssembly and the browser's
+    own image APIs. When you drop a file onto a tool, that file is read into your browser's
+    memory on your own computer or phone. It is never transmitted to us or to anyone else.
+  </p>
+  <p>
+    This is not a policy promise that you have to take on trust — it is a property of how the
+    site is built, and you can verify it. Load any tool page, disconnect from the internet, and
+    then process an image. It works, because there is nothing on the other end of a connection
+    to talk to. You can also open your browser's developer tools, watch the Network tab, and
+    confirm that processing a file produces no outbound requests.
+  </p>
+  <p>
+    Because we never receive your files, there is no server-side copy to delete, no retention
+    period to describe, and no risk of a data breach exposing your photographs.
+  </p>
+
+  <h2>What we do collect</h2>
+
+  <h3>Hosting logs</h3>
+  <p>
+    This site is served by a hosting provider that keeps standard web server logs. These
+    typically record your IP address, the page requested, the time, your browser's user agent
+    string and the referring page. This happens for every website you visit and is used for
+    security and to keep the service running. We do not combine these logs with anything else
+    or use them to build a profile of you.
+  </p>
+
+  <h3>Settings stored in your browser</h3>
+  <p>
+    Some tools remember your last-used settings — a quality level, a preferred output format —
+    so you do not have to set them again on your next visit. These are stored in your browser's
+    local storage on your own device. They contain no personal information, they are never sent
+    anywhere, and clearing your browser data removes them.
+  </p>
+
+  <h3>What we do not collect</h3>
+  <ul>
+    <li>No accounts, usernames or passwords, because there is no login.</li>
+    <li>No email addresses, unless you choose to write to us.</li>
+    <li>No payment details, because nothing here is for sale.</li>
+    <li>No copies of your images, thumbnails, or metadata extracted from them.</li>
+    <li>No cross-site tracking of your browsing elsewhere.</li>
+  </ul>
+
+  {
+    SITE.analytics.plausibleDomain && (
+      <Fragment>
+        <h2>Analytics</h2>
+        <p>
+          We use Plausible Analytics to count page views and see which tools are being used.
+          Plausible does not use cookies, does not collect personal data, and does not track
+          people across websites or over time. It reports aggregate numbers only.
+        </p>
+      </Fragment>
+    )
+  }
+
+  {
+    SITE.adsense.enabled && (
+      <Fragment>
+        <h2>Advertising</h2>
+        <p>
+          This site displays advertisements supplied by Google AdSense, which is how it is paid
+          for. Advertising involves third parties, so this section matters.
+        </p>
+        <ul>
+          <li>
+            Google, as a third-party vendor, uses cookies to serve ads on this site. The
+            DoubleClick cookie enables Google and its partners to serve ads based on your visits
+            here and to other sites on the internet.
+          </li>
+          <li>
+            Third-party vendors and ad networks may also use cookies or similar technologies to
+            serve and measure advertising.
+          </li>
+          <li>
+            You can opt out of personalised advertising by visiting{' '}
+            <a
+              href="https://www.google.com/settings/ads"
+              rel="noopener nofollow"
+              target="_blank"
+            >
+              Google's Ads Settings
+            </a>
+            . You can also opt out of third-party vendors' use of cookies for personalised
+            advertising at{' '}
+            <a href="https://www.aboutads.info/choices/" rel="noopener nofollow" target="_blank">
+              aboutads.info
+            </a>
+            .
+          </li>
+          <li>
+            If you are in the European Economic Area, the United Kingdom or Switzerland, you will
+            be shown a consent message before any advertising cookies are set, and you can change
+            your choice at any time.
+          </li>
+        </ul>
+        <p>
+          Advertising is kept away from the tool controls and download buttons deliberately, so
+          that you never click an advertisement when you meant to click a button.
+        </p>
+        <p>
+          Advertisers never receive your images. Advertising code has no access to the files you
+          process, which are handled entirely in a separate part of the page.
+        </p>
+      </Fragment>
+    )
+  }
+
+  <h2>Links to other sites</h2>
+  <p>
+    Some pages link to platform documentation, such as Google's guidance on thumbnail sizes or a
+    marketplace's image requirements. Those sites have their own privacy policies, which we do
+    not control.
+  </p>
+
+  <h2>Children</h2>
+  <p>
+    This site is not directed at children and we do not knowingly collect information from
+    anyone. Since there is no account system and no data submission of any kind, there is
+    nothing for a child to submit.
+  </p>
+
+  <h2>Your rights</h2>
+  <p>
+    Data protection law in the UK, the EU and elsewhere gives you rights over personal data held
+    about you, including the right to request access to it or its deletion. Because we hold no
+    personal data beyond standard server logs, in most cases there is nothing to disclose or
+    erase. If you want to make a request anyway, write to us and we will respond.
+  </p>
+
+  <h2>Changes to this policy</h2>
+  <p>
+    If this policy changes in a way that affects you — most likely because advertising or
+    analytics has been added — the date at the top of this page will change. Substantive changes
+    will be described here rather than quietly folded in.
+  </p>
+
+  <h2>Contact</h2>
+  <p>
+    Questions about this policy can go to <a href={`mailto:${SITE.email}`}>{SITE.email}</a>, or
+    through the <a href="/contact/">contact page</a>.
+  </p>
+</Page>

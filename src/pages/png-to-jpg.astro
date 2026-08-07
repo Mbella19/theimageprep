@@ -1,0 +1,95 @@
+---
+import ToolPage from '../layouts/ToolPage.astro';
+import ConvertImage from '../tools/ConvertImage';
+import { getTool } from '../data/tools';
+
+const tool = getTool('png-to-jpg');
+---
+
+<ToolPage tool={tool}>
+  <ConvertImage
+    slot="tool"
+    to="jpeg"
+    accept="image/png,.png"
+    defaultQuality={88}
+    needsBackground={true}
+    dropLabel="Drop PNG files here"
+    client:load
+  />
+
+  <Fragment slot="content">
+    <section class="section">
+      <h2 id="transparency">The transparency question comes first</h2>
+      <p>
+        JPG has no alpha channel. There is no way to store "this pixel is see-through" in a JPEG
+        file, so every transparent area in your PNG has to be painted a solid colour before the
+        conversion can happen. That choice is permanent, and it is the single most common way
+        this conversion goes wrong.
+      </p>
+      <p>
+        White is the default here because it is what Amazon, eBay and most print services
+        require, and because most images are viewed against white. But if your logo is going onto
+        a dark page, a white box will appear around it. Match the background colour to wherever
+        the image will actually sit, or keep the PNG.
+      </p>
+      <p>
+        A useful check: if your PNG has soft edges — a drop shadow, a feathered cutout,
+        anti-aliased lettering — those edges are made of semi-transparent pixels and they will
+        blend into whatever colour you pick. Choosing white and then placing the result on grey
+        produces a visible pale halo.
+      </p>
+    </section>
+
+    <section class="section">
+      <h2 id="should-you">Should you convert at all?</h2>
+      <p>There are three good reasons, and one bad one.</p>
+      <h3>Good: the image is a photograph</h3>
+      <p>
+        A photograph saved as PNG is typically five to ten times larger than the same photograph
+        as a JPG at quality 85, with no visible advantage. If somebody sent you a 12 MB PNG of a
+        product shot, converting it is straightforwardly correct.
+      </p>
+      <h3>Good: something requires JPG</h3>
+      <p>
+        Plenty of upload forms, print services and older systems accept nothing else. This is not
+        a judgement about quality, it is a compatibility requirement.
+      </p>
+      <h3>Good: you need to hit a file size limit</h3>
+      <p>
+        JPG's quality control gives you a dial that PNG does not. Combined with{' '}
+        <a href="/compress-jpg/">target size compression</a>, it is the reliable way to fit under
+        a hard limit.
+      </p>
+      <h3>Bad: the image is a screenshot, logo or diagram</h3>
+      <p>
+        JPEG compression is built for photographic detail and handles hard edges badly. Convert a
+        screenshot to JPG and you will see faint coloured halos around every letter. Keep those
+        as PNG, or use <a href="/compress-webp/">lossless WebP</a>, which handles both cases well.
+      </p>
+    </section>
+
+    <section class="section">
+      <h2 id="quality">Choosing a quality setting</h2>
+      <p>
+        Because the source PNG is lossless, this is the first time the image is being compressed
+        — so you are not stacking generation loss, and you can afford to be a little more
+        generous than when re-compressing an existing JPEG.
+      </p>
+      <p>
+        Quality 88 is a sensible default for a photograph. For a marketplace listing where the
+        platform will re-compress your upload anyway, 90 or above gives their encoder better
+        material to work from. If you have a specific file size to meet, switch to target size
+        mode and let the tool find the quality for you.
+      </p>
+    </section>
+
+    <section class="section">
+      <h2 id="reversibility">This conversion is one-way</h2>
+      <p>
+        Converting the resulting JPG back to PNG restores nothing. The transparency is gone, the
+        detail discarded during compression is gone, and the only thing you gain is a larger file
+        containing the same damaged image. Keep your original PNG.
+      </p>
+    </section>
+  </Fragment>
+</ToolPage>

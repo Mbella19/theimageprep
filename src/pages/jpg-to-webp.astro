@@ -1,0 +1,89 @@
+---
+import ToolPage from '../layouts/ToolPage.astro';
+import ConvertImage from '../tools/ConvertImage';
+import { getTool } from '../data/tools';
+
+const tool = getTool('jpg-to-webp');
+---
+
+<ToolPage tool={tool}>
+  <ConvertImage
+    slot="tool"
+    to="webp"
+    accept="image/jpeg,image/png,.jpg,.jpeg"
+    defaultQuality={80}
+    allowLossless={true}
+    dropLabel="Drop JPG files here"
+    client:load
+  />
+
+  <Fragment slot="content">
+    <section class="section">
+      <h2 id="why">Why WebP is smaller</h2>
+      <p>
+        JPEG was finalised in 1992. WebP arrived in 2010 and benefits from eighteen years of
+        additional research into how images compress. Where JPEG treats each 8 by 8 block largely
+        on its own, WebP predicts each block from the pixels around it and stores only the
+        difference — so a large area of sky, which is highly predictable, costs very little to
+        encode.
+      </p>
+      <p>
+        In practice that means 25-35% smaller files at matched visual quality on typical
+        photographs. The saving is largest on images with smooth regions — skies, studio
+        backdrops, blurred backgrounds — and smallest on dense, busy, highly detailed scenes.
+      </p>
+    </section>
+
+    <section class="section">
+      <h2 id="generation-loss">You are converting lossy to lossy</h2>
+      <p>
+        Your JPG has already been compressed once. Converting it to WebP decodes it and
+        compresses it again, so a small amount of quality is lost in the round trip regardless of
+        the setting you choose. This is unavoidable and usually invisible, but it is worth
+        knowing two things.
+      </p>
+      <p>
+        First, convert from the highest-quality JPG you have rather than from a copy that has
+        already been through several rounds. Second, do not set the WebP quality very low on top
+        of an already-compressed source: you will be compressing compression artefacts, which
+        wastes bits on noise that was never in the original photograph.
+      </p>
+    </section>
+
+    <section class="section">
+      <h2 id="serving">Serving WebP properly on a website</h2>
+      <p>
+        Every current browser supports WebP, so for most sites you can simply use the WebP file
+        and stop thinking about it. If you need to support genuinely old browsers, serve both and
+        let the browser choose:
+      </p>
+      <div class="table-scroll">
+        <pre style="background:var(--bg-inset);border:1px solid var(--border);border-radius:var(--radius-sm);padding:var(--space-4);overflow-x:auto;font-size:var(--step--2)"><code>&lt;picture&gt;
+  &lt;source srcset="photo.webp" type="image/webp"&gt;
+  &lt;img src="photo.jpg" alt="Describe the image here" width="1200" height="800"&gt;
+&lt;/picture&gt;</code></pre>
+      </div>
+      <p>
+        Always set <code>width</code> and <code>height</code> on the <code>img</code> tag. Without
+        them the browser does not know how much space to reserve, the page jumps as images load,
+        and that jump is measured directly by Cumulative Layout Shift — one of the Core Web
+        Vitals Google uses as a ranking signal.
+      </p>
+    </section>
+
+    <section class="section">
+      <h2 id="seo">Does converting to WebP help SEO?</h2>
+      <p>
+        Not directly. Google has no preference for one image format over another, and no ranking
+        boost is applied for using WebP.
+      </p>
+      <p>
+        It helps indirectly, and the indirect route is real. Smaller images mean faster pages,
+        page speed feeds into Core Web Vitals, and Core Web Vitals are part of how Google
+        assesses page experience. On an image-heavy page, switching to WebP is usually the single
+        largest speed improvement available for the least effort. Just do not expect the format
+        itself to move anything.
+      </p>
+    </section>
+  </Fragment>
+</ToolPage>

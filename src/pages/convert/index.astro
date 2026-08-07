@@ -1,0 +1,87 @@
+---
+import CategoryLayout from '../../layouts/Category.astro';
+import { getCategory } from '../../data/tools';
+
+const category = getCategory('convert');
+---
+
+<CategoryLayout category={category}>
+  <section class="section">
+    <h2>Choosing a format</h2>
+    <p>
+      Format choice is mostly determined by what the image contains, not by preference. Getting
+      it right often saves more than any compression setting.
+    </p>
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr>
+            <th>Format</th>
+            <th>Best for</th>
+            <th>Transparency</th>
+            <th>Lossy</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>JPG</strong></td>
+            <td>Photographs; anywhere maximum compatibility is required</td>
+            <td>No</td>
+            <td>Yes</td>
+          </tr>
+          <tr>
+            <td><strong>PNG</strong></td>
+            <td>Logos, screenshots, diagrams, anything needing transparency</td>
+            <td>Yes</td>
+            <td>No</td>
+          </tr>
+          <tr>
+            <td><strong>WebP</strong></td>
+            <td>Websites — smaller than both, with either mode available</td>
+            <td>Yes</td>
+            <td>Either</td>
+          </tr>
+          <tr>
+            <td><strong>HEIC</strong></td>
+            <td>Nothing, outside an Apple device — convert it</td>
+            <td>Yes</td>
+            <td>Yes</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2>The two conversions that lose something</h2>
+    <p>
+      Most conversions are reversible in principle. Two are not, and both are easy to do by
+      accident.
+    </p>
+    <p>
+      <strong>PNG to JPG destroys transparency.</strong> JPG has no alpha channel, so transparent
+      areas must be filled with a solid colour, and that choice cannot be undone. Converting back
+      to PNG produces a larger file with a permanent coloured background.{' '}
+      <a href="/png-to-jpg/">The converter</a> lets you choose that colour deliberately.
+    </p>
+    <p>
+      <strong>Any lossy-to-lossy conversion compounds damage.</strong> Converting a JPG to WebP
+      decodes an already-compressed image and compresses it again. The effect is usually
+      invisible, but convert from your highest-quality original where you can.
+    </p>
+  </section>
+
+  <section class="section">
+    <h2>Where each format is accepted</h2>
+    <p>
+      Compatibility, not quality, is what usually forces a conversion. Marketplaces — Etsy,
+      Amazon, eBay, Shopify — expect JPG or PNG and generally reject WebP. Use WebP on your own
+      website, where you control the hosting and page speed matters.
+    </p>
+    <p>
+      HEIC is rejected almost everywhere outside Apple's ecosystem, which is why{' '}
+      <a href="/heic-to-jpg/">converting iPhone photos</a> is the most common conversion people
+      need. That page also explains how to stop your phone producing HEIC in the first place.
+    </p>
+  </section>
+</CategoryLayout>

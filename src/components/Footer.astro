@@ -1,0 +1,53 @@
+---
+/**
+ * The footer links to every tool on the site.
+ *
+ * That is deliberate: it guarantees every page is at most two clicks from every
+ * other page, gives crawlers a complete link graph from anywhere, and spreads
+ * internal link equity across all the tool pages rather than concentrating it
+ * on whichever ones happen to be in the header.
+ */
+import { SITE } from '../config';
+import { CATEGORIES, toolsInCategory } from '../data/tools';
+
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="site-footer__grid">
+      {
+        CATEGORIES.map((category) => (
+          <div>
+            <h2>
+              <a href={`/${category.slug}/`}>{category.name}</a>
+            </h2>
+            <ul>
+              {toolsInCategory(category.id).map((tool) => (
+                <li>
+                  <a href={`/${tool.slug}/`}>{tool.name}</a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))
+      }
+
+      <div>
+        <h2>Site</h2>
+        <ul>
+          <li><a href="/guides/">Guides</a></li>
+          <li><a href="/about/">About</a></li>
+          <li><a href="/contact/">Contact</a></li>
+          <li><a href="/privacy-policy/">Privacy policy</a></li>
+          <li><a href="/terms/">Terms of use</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="site-footer__base">
+      <p>&copy; {year} {SITE.name}. {SITE.tagline}.</p>
+      <p>All image processing happens in your browser. Nothing is uploaded.</p>
+    </div>
+  </div>
+</footer>

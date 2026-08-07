@@ -1,0 +1,43 @@
+{
+  "name": "image-utility-website",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro build && node scripts/audit-seo.mjs",
+    "build:fast": "astro build",
+    "preview": "astro preview",
+    "check": "astro check",
+    "audit": "node scripts/audit-seo.mjs",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "verify": "node scripts/verify-browser.mjs",
+    "verify:outputs": "node scripts/verify-outputs.mjs",
+    "verify:all": "npm run test && npm run build && npm run verify && npm run verify:outputs",
+    "assets": "node scripts/make-assets.mjs",
+    "fixtures": "node scripts/make-fixtures.mjs"
+  },
+  "dependencies": {
+    "@astrojs/mdx": "^7.0.5",
+    "@astrojs/preact": "^6.0.2",
+    "@astrojs/sitemap": "^3.7.3",
+    "@jsquash/jpeg": "^1.6.0",
+    "@jsquash/oxipng": "^2.3.0",
+    "@jsquash/png": "^3.1.1",
+    "@jsquash/resize": "^2.1.1",
+    "@jsquash/webp": "^1.5.0",
+    "astro": "^7.2.0",
+    "exifreader": "^4.42.0",
+    "fflate": "^0.8.3",
+    "heic-to": "^1.5.2",
+    "preact": "^10.29.8"
+  },
+  "devDependencies": {
+    "playwright": "^1.62.1",
+    "sharp": "^0.35.3",
+    "typescript": "^5.9.2",
+    "vitest": "^4.1.10"
+  }
+}

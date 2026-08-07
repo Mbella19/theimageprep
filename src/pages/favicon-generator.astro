@@ -1,0 +1,149 @@
+---
+import ToolPage from '../layouts/ToolPage.astro';
+import FaviconGenerator from '../tools/FaviconGenerator';
+import { getTool } from '../data/tools';
+
+const tool = getTool('favicon-generator');
+---
+
+<ToolPage tool={tool}>
+  <FaviconGenerator slot="tool" client:load />
+
+  <Fragment slot="content">
+    <section class="section">
+      <h2 id="what-you-need">What a modern site actually needs</h2>
+      <p>
+        There is a persistent myth that a single <code>favicon.ico</code> is enough, and another
+        that <code>.ico</code> is obsolete and PNGs alone will do. Both are wrong, which is why
+        this generator produces a set rather than a file.
+      </p>
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th>File</th>
+              <th>Size</th>
+              <th>Used by</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>favicon.ico</code></td>
+              <td>16, 32, 48 in one file</td>
+              <td>Browsers requesting the site root directly; older software</td>
+            </tr>
+            <tr>
+              <td><code>favicon-16x16.png</code></td>
+              <td>16 x 16</td>
+              <td>Browser tabs at standard resolution</td>
+            </tr>
+            <tr>
+              <td><code>favicon-32x32.png</code></td>
+              <td>32 x 32</td>
+              <td>Browser tabs on retina displays, bookmarks</td>
+            </tr>
+            <tr>
+              <td><code>favicon-48x48.png</code></td>
+              <td>48 x 48</td>
+              <td>Windows taskbar, some bookmark views</td>
+            </tr>
+            <tr>
+              <td><code>apple-touch-icon.png</code></td>
+              <td>180 x 180</td>
+              <td>iOS home screen shortcuts</td>
+            </tr>
+            <tr>
+              <td><code>android-chrome-192x192.png</code></td>
+              <td>192 x 192</td>
+              <td>Android home screen</td>
+            </tr>
+            <tr>
+              <td><code>android-chrome-512x512.png</code></td>
+              <td>512 x 512</td>
+              <td>Progressive web app splash screens</td>
+            </tr>
+            <tr>
+              <td><code>site.webmanifest</code></td>
+              <td>—</td>
+              <td>Tells Android and PWAs which icons to use</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p>
+        The <code>.ico</code> produced here is a genuine multi-resolution file containing the 16,
+        32 and 48 pixel versions together. That is what the format is for, and it is why a single
+        request to <code>/favicon.ico</code> can serve every context that needs a small icon.
+      </p>
+    </section>
+
+    <section class="section">
+      <h2 id="install">Installing the files</h2>
+      <ol class="steps">
+        <li>
+          <span>
+            Unzip the download and copy every file into the <strong>root folder</strong> of your
+            website — the same place your homepage lives — so they are reachable at
+            <code>yoursite.com/favicon.ico</code> and so on. Putting them in a subfolder is the
+            most common reason a favicon does not appear.
+          </span>
+        </li>
+        <li>
+          <span>
+            Paste the supplied HTML into the <code>&lt;head&gt;</code> of every page. The manifest
+            is found through that link tag rather than automatically.
+          </span>
+        </li>
+        <li>
+          <span>
+            Hard refresh, or visit <code>yoursite.com/favicon.ico</code> directly, to confirm it
+            is being served.
+          </span>
+        </li>
+      </ol>
+      <p>
+        Browsers cache favicons far more aggressively than other assets — an old icon can persist
+        for days through ordinary reloads. If you have replaced one and nothing seems to change,
+        it is almost certainly cached rather than broken. Loading the icon URL directly is the
+        quickest way to see what the server is actually returning.
+      </p>
+    </section>
+
+    <section class="section">
+      <h2 id="design">Designing something that survives 16 pixels</h2>
+      <p>
+        Sixteen pixels square is roughly the size of a full stop on this page. It is a brutal
+        constraint, and it is the reason so many favicons are unreadable smudges: they are a
+        detailed logo scaled down until nothing remains.
+      </p>
+      <p>The favicons that work are almost always one of:</p>
+      <ul>
+        <li>A single letter — the first initial of the brand, set heavy.</li>
+        <li>A single simple symbol, with no fine internal detail.</li>
+        <li>A bold geometric shape in one or two flat colours.</li>
+      </ul>
+      <p>
+        Two practical tests. Check the contrast against both a light and a dark tab bar, since
+        you do not control which the visitor uses — a dark icon disappears entirely in dark mode.
+        And look at the 16 pixel preview above rather than the large one: if you cannot tell what
+        it is, neither can anyone else, and the fix is simpler artwork rather than a better
+        generator.
+      </p>
+    </section>
+
+    <section class="section">
+      <h2 id="svg">Should you use an SVG favicon?</h2>
+      <p>
+        It is worth adding, but not instead of these files. Modern browsers support{' '}
+        <code>&lt;link rel="icon" href="/favicon.svg" type="image/svg+xml"&gt;</code>, and an SVG
+        stays crisp at any size and can adapt to dark mode with a media query inside the file
+        itself.
+      </p>
+      <p>
+        But it does not cover iOS home screen icons, Android home screens, the Windows taskbar,
+        or any tool that simply requests <code>/favicon.ico</code>. Declare the SVG first and keep
+        the generated set as the fallback — browsers pick the first format they understand.
+      </p>
+    </section>
+  </Fragment>
+</ToolPage>

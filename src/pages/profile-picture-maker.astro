@@ -1,0 +1,114 @@
+---
+import ToolPage from '../layouts/ToolPage.astro';
+import ProfilePicture from '../tools/ProfilePicture';
+import { getTool } from '../data/tools';
+
+const tool = getTool('profile-picture-maker');
+---
+
+<ToolPage tool={tool}>
+  <ProfilePicture slot="tool" client:load />
+
+  <Fragment slot="content">
+    <section class="section">
+      <h2 id="png-or-jpg">Transparent PNG or JPG with a background?</h2>
+      <p>
+        A circle cut out of a rectangular image leaves four corners that have to be something.
+        Your two options behave quite differently.
+      </p>
+      <p>
+        <strong>Transparent PNG</strong> leaves those corners empty, so the circle sits correctly
+        on any background colour. This is the safer choice: if a platform displays your avatar on
+        a dark header one day and a light card the next, a transparent PNG looks right in both.
+      </p>
+      <p>
+        <strong>JPG with a background colour</strong> fills the corners with whatever you pick.
+        The file is smaller, and some upload forms still reject PNG. The risk is a visible square
+        of the wrong colour behind your circle — so match the colour to where it will actually
+        appear, or use PNG.
+      </p>
+      <p>
+        Worth knowing: most platforms crop avatars to a circle themselves, so pre-cropping is
+        mainly about controlling the framing rather than the shape. Doing it yourself means you
+        decide what gets cut, instead of an automatic centre crop deciding for you.
+      </p>
+    </section>
+
+    <section class="section">
+      <h2 id="size">What size to export</h2>
+      <p>
+        Larger than the minimum, always. Platforms downscale whatever you give them, and they do
+        it well — but none of them will upscale, so uploading something exactly at the stated
+        minimum leaves no headroom when a redesign increases the display size.
+      </p>
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th>Platform</th>
+              <th>Recommended upload</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>YouTube</td><td>800 x 800</td></tr>
+            <tr><td>Facebook</td><td>512 x 512</td></tr>
+            <tr><td>LinkedIn</td><td>400 x 400</td></tr>
+            <tr><td>X</td><td>400 x 400</td></tr>
+            <tr><td>Instagram</td><td>320 x 320</td></tr>
+            <tr><td>TikTok</td><td>200 x 200</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>
+        Exporting a single 800 by 800 image covers every one of these. There is no benefit to
+        matching each platform's exact number.
+      </p>
+    </section>
+
+    <section class="section">
+      <h2 id="framing">Framing a face that reads at 40 pixels</h2>
+      <p>
+        Avatars are displayed small — often 40 pixels across in a comment thread, sometimes
+        smaller. That single fact should drive every framing decision.
+      </p>
+      <ul>
+        <li>
+          Fill most of the circle with your head and shoulders. A full-body shot becomes an
+          unidentifiable smudge.
+        </li>
+        <li>
+          Leave a small margin above the head. Cropping right at the hairline looks cramped, and
+          platforms sometimes crop slightly tighter than your preview.
+        </li>
+        <li>
+          Favour a plain or blurred background. Detail behind you competes with your face at
+          small sizes and wins.
+        </li>
+        <li>
+          Check the contrast between you and the background. At 40 pixels, contrast is what makes
+          a face recognisable, not detail.
+        </li>
+      </ul>
+    </section>
+
+    <section class="section">
+      <h2 id="blurry">Why avatars come out blurry</h2>
+      <p>
+        Nearly always because the source was too small. If your original photo is 500 pixels wide
+        and your face occupies a third of it, the face is around 170 pixels — so a 400 pixel
+        avatar is being enlarged more than twice, and no amount of processing recovers detail
+        that was never captured.
+      </p>
+      <p>
+        The tool warns you when the area you have framed is smaller than the output size you have
+        chosen. If you see that warning, the fix is a larger source photo, not a different
+        setting. Failing that, drop the output size to something the source can actually support.
+      </p>
+      <p>
+        The second cause is platform compression. Most services re-encode avatars aggressively.
+        You cannot control that, but giving them a clean, sharp, correctly sized image to start
+        from produces a noticeably better result than giving them something already soft.
+      </p>
+    </section>
+  </Fragment>
+</ToolPage>

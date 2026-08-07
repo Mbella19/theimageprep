@@ -1,0 +1,63 @@
+---
+import CategoryLayout from '../../layouts/Category.astro';
+import { getCategory } from '../../data/tools';
+
+const category = getCategory('generate');
+---
+
+<CategoryLayout category={category}>
+  <section class="section">
+    <h2>One source image, a complete set out</h2>
+    <p>
+      These tools exist because the work is repetitive rather than difficult. A website needs
+      eight icon files in specific sizes with a manifest and the right HTML. A product launch
+      needs the same photograph at a dozen platform sizes. Doing that by hand in an image editor
+      is an afternoon; doing it here is a click.
+    </p>
+    <ul>
+      <li>
+        <a href="/favicon-generator/">Favicon generator</a> — every icon size a modern site needs,
+        a true multi-resolution <code>favicon.ico</code>, the web manifest, and the HTML to paste
+        into your head.
+      </li>
+      <li>
+        <a href="/social-media-image-sizes/">Social media sizes</a> — one image resized correctly
+        for Instagram, YouTube, TikTok, Pinterest, Etsy, Amazon and more, bundled into a ZIP.
+      </li>
+      <li>
+        <a href="/add-watermark/">Watermark</a> — a text or logo mark applied to one image or a
+        whole batch with consistent placement.
+      </li>
+    </ul>
+  </section>
+
+  <section class="section">
+    <h2>Start from the largest original you have</h2>
+    <p>
+      Everything here derives outputs from your source, so the source sets the quality ceiling for
+      all of them. Scaling down looks excellent; scaling up cannot invent detail that was never
+      captured.
+    </p>
+    <p>
+      The largest targets are 3840 pixels for a YouTube thumbnail, 2048 for a Shopify product
+      image and 2000 for an Etsy listing, so a source around 2000 pixels on its shortest side
+      covers nearly everything. Both generators warn you when a requested output is larger than
+      your source rather than quietly producing something soft.
+    </p>
+  </section>
+
+  <section class="section">
+    <h2>Batch work and consistency</h2>
+    <p>
+      The watermark tool applies one configuration across every file you drop in, which is the
+      point — a batch of listing photos with the mark in a different place on each looks
+      careless.
+    </p>
+    <p>
+      Two things to check before committing to a large batch. Preview against your brightest and
+      darkest images, because a single opacity setting has to work for both. And confirm the
+      platform allows watermarks at all: Amazon prohibits them on main product images, and a
+      suppressed listing is a worse outcome than an unwatermarked photo.
+    </p>
+  </section>
+</CategoryLayout>

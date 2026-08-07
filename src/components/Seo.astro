@@ -1,0 +1,80 @@
+---
+/**
+ * Every <head> tag that matters for search, in one place.
+ *
+ * Because every page routes through this component, a page cannot accidentally
+ * ship without a canonical, a description or an OG image — which is exactly the
+ * failure mode of hand-written HTML across dozens of pages.
+ */
+import { SITE, absoluteUrl } from '../config';
+
+export interface Props {
+  title: string;
+  description: string;
+  /** Site-relative path of THIS page, e.g. '/compress-jpg/' */
+  path: string;
+  /** Site-relative OG image path. Falls back to the generic card. */
+  ogImage?: string;
+  type?: 'website' | 'article';
+  noindex?: boolean;
+  publishedTime?: string;
+  modifiedTime?: string;
+}
+
+const {
+  title,
+  description,
+  path,
+  ogImage = '/og/default.png',
+  type = 'website',
+  noindex = false,
+  publishedTime,
+  modifiedTime,
+} = Astro.props;
+
+const canonical = absoluteUrl(path);
+const imageUrl = absoluteUrl(ogImage);
+---
+
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<title>{title}</title>
+<meta name="description" content={description} />
+<link rel="canonical" href={canonical} />
+
+{noindex && <meta name="robots" content="noindex, nofollow" />}
+{!noindex && <meta name="robots" content="index, follow, max-image-preview:large" />}
+
+{/* Open Graph */}
+<meta property="og:type" content={type} />
+<meta property="og:site_name" content={SITE.name} />
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+<meta property="og:url" content={canonical} />
+<meta property="og:image" content={imageUrl} />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:locale" content="en_GB" />
+{publishedTime && <meta property="article:published_time" content={publishedTime} />}
+{modifiedTime && <meta property="article:modified_time" content={modifiedTime} />}
+
+{/* Twitter / X */}
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={title} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={imageUrl} />
+
+{/* Icons */}
+<link rel="icon" href="/favicon.ico" sizes="32x32" />
+<link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+<link rel="manifest" href="/site.webmanifest" />
+<meta name="theme-color" content="#0f6e60" media="(prefers-color-scheme: light)" />
+<meta name="theme-color" content="#0e1614" media="(prefers-color-scheme: dark)" />
+
+{/* Search engine verification — omitted entirely when not configured */}
+{SITE.verification.google && (
+  <meta name="google-site-verification" content={SITE.verification.google} />
+)}
+{SITE.verification.bing && <meta name="msvalidate.01" content={SITE.verification.bing} />}

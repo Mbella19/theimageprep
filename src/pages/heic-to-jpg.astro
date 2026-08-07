@@ -1,0 +1,113 @@
+---
+import ToolPage from '../layouts/ToolPage.astro';
+import ConvertImage from '../tools/ConvertImage';
+import { getTool } from '../data/tools';
+
+const tool = getTool('heic-to-jpg');
+---
+
+<ToolPage tool={tool}>
+  <ConvertImage
+    slot="tool"
+    to="jpeg"
+    accept=".heic,.heif,image/heic,image/heif"
+    defaultQuality={88}
+    dropLabel="Drop HEIC photos here"
+    slowFirstLoadNote="The HEIC decoder is about three megabytes and downloads the first time you use it, so the first photo takes a few seconds longer than the rest. After that it is cached."
+    metadataNote="Camera details, timestamps and GPS coordinates are not carried into the JPG. The output contains the picture and nothing else."
+    client:load
+  />
+
+  <Fragment slot="content">
+    <section class="section">
+      <h2 id="what-is-heic">Why your iPhone makes files nothing can open</h2>
+      <p>
+        Since iOS 11, iPhones have saved photos as HEIC by default. It is a genuinely better
+        format: the same picture in roughly half the space of a JPEG, so more photos fit on the
+        phone and iCloud backups are smaller.
+      </p>
+      <p>
+        The problem is everywhere else. HEIC uses the HEVC video codec, which carries patent
+        licensing that most software vendors declined to pay for. So Windows shows a grey box,
+        marketplace upload forms reject the file, older photo editors cannot open it, and
+        emailing one to somebody on Android produces a confused reply. The picture is fine — the
+        container is the problem.
+      </p>
+    </section>
+
+    <section class="section">
+      <h2 id="how-it-works">How this converts without uploading anything</h2>
+      <p>
+        Because no browser outside Apple's platforms can decode HEIC natively, this tool loads
+        libheif — the same open-source decoder most native HEIC viewers use — compiled to
+        WebAssembly and running inside your browser. It decodes the picture on your device and
+        re-encodes it as a JPEG.
+      </p>
+      <p>
+        That decoder is around three megabytes, which is why the very first photo takes a few
+        seconds longer than the rest. It downloads once and is then cached, so subsequent files
+        and subsequent visits are fast. Nothing is transmitted at any point.
+      </p>
+    </section>
+
+    <section class="section">
+      <h2 id="orientation">Your photos will not come out sideways</h2>
+      <p>
+        Phones do not rotate the pixels they capture. The camera sensor has a fixed orientation,
+        so a photo taken in portrait is stored landscape with a tag saying "display this rotated
+        90 degrees". Software that reads the tag shows it correctly; software that ignores it
+        shows it on its side.
+      </p>
+      <p>
+        A great many online converters ignore it, which is why "my converted photos are all
+        sideways" is such a common complaint. This tool reads the orientation and bakes the
+        rotation into the output pixels, so the JPG is upright in every program, including ones
+        that never look at metadata.
+      </p>
+    </section>
+
+    <section class="section">
+      <h2 id="privacy">What happens to the location data</h2>
+      <p>
+        A HEIC photo taken on a phone with location services enabled records where you were,
+        usually to within a few metres, along with the exact date and time, the camera model and
+        the settings used.
+      </p>
+      <p>
+        Converting here does not carry any of that across. The decoder produces raw pixels and a
+        fresh JPEG is written from them, so the output contains the image and nothing else. For
+        most people converting phone photos to share or upload, that is exactly the right
+        outcome — but if you need the original capture data for your records, keep the HEIC file
+        as well.
+      </p>
+      <p>
+        If you want to see what your photos are currently revealing before you share anything,
+        the <a href="/remove-exif-data/">EXIF viewer</a> shows you the full contents of a file,
+        including a map link for any GPS coordinates it finds.
+      </p>
+    </section>
+
+    <section class="section">
+      <h2 id="stop-heic">How to stop your iPhone making HEIC files</h2>
+      <p>
+        If this is a recurring annoyance rather than a one-off, change the setting rather than
+        converting forever:
+      </p>
+      <ol class="steps">
+        <li><span>Open <strong>Settings</strong> on your iPhone.</span></li>
+        <li><span>Tap <strong>Camera</strong>, then <strong>Formats</strong>.</span></li>
+        <li><span>Choose <strong>Most Compatible</strong>.</span></li>
+      </ol>
+      <p>
+        New photos will be saved as JPEG from that point on. Photos already on the phone stay as
+        HEIC, which is what this tool is for. The trade-off is that JPEGs take up roughly twice
+        the space.
+      </p>
+      <p>
+        There is also a partial workaround when sharing: in Settings, Photos, under Transfer to
+        Mac or PC, choosing Automatic converts to JPEG on export. It does not apply to every
+        sharing route, so it is less reliable than changing the capture format.
+      </p>
+    </section>
+  </Fragment>
+</ToolPage>

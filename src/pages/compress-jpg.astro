@@ -1,0 +1,132 @@
+---
+import ToolPage from '../layouts/ToolPage.astro';
+import CompressImage from '../tools/CompressImage';
+import { getTool } from '../data/tools';
+
+const tool = getTool('compress-jpg');
+---
+
+<ToolPage tool={tool}>
+  <CompressImage
+    slot="tool"
+    format="jpeg"
+    accept="image/jpeg,image/png,image/webp,.jpg,.jpeg"
+    defaultQuality={80}
+    client:load
+  />
+
+  <Fragment slot="content">
+    <section class="section">
+      <h2 id="how-it-works">How JPEG compression works</h2>
+      <p>
+        JPEG does not store your photograph pixel by pixel. It divides the image into blocks of
+        8 by 8 pixels, converts each block into a set of frequency patterns, and then throws away
+        the patterns your eye is least likely to miss — mostly fine, high-frequency detail. The
+        quality setting controls how aggressively that discarding happens.
+      </p>
+      <p>
+        This matters for two reasons. First, the loss is permanent: the discarded detail is not
+        recoverable by converting back to PNG or by raising the quality later. Second, the
+        damage compounds. Each time a JPEG is opened and saved again it is decoded and
+        re-encoded, and the block boundaries can shift slightly, so a file saved five times looks
+        noticeably worse than one saved once at the same quality. Always compress from the
+        highest-quality original you have rather than from a copy that has already been through
+        the process.
+      </p>
+      <p>
+        This tool encodes with MozJPEG, the same encoder used by Squoosh. At an identical quality
+        setting it produces a smaller file than a browser's built-in JPEG encoder, because it
+        spends more effort searching for an efficient encoding of the same visual result.
+      </p>
+    </section>
+
+    <section class="section">
+      <h2 id="quality-guide">Choosing a quality level</h2>
+      <p>
+        Quality numbers are not a percentage of anything, and they are not comparable between
+        formats. As a rough guide for photographs:
+      </p>
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th>Quality</th>
+              <th>What it looks like</th>
+              <th>Good for</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>95-100</td>
+              <td>Indistinguishable from the original, but files barely shrink</td>
+              <td>Archiving, further editing</td>
+            </tr>
+            <tr>
+              <td>85-94</td>
+              <td>No visible difference to almost anyone</td>
+              <td>Print, marketplace listings, portfolios</td>
+            </tr>
+            <tr>
+              <td>75-84</td>
+              <td>The sweet spot — big savings, no obvious loss</td>
+              <td>Websites, blogs, social posts</td>
+            </tr>
+            <tr>
+              <td>60-74</td>
+              <td>Slight softening; faint blocking in skies</td>
+              <td>Thumbnails, images displayed small</td>
+            </tr>
+            <tr>
+              <td>Below 60</td>
+              <td>Visible blocks and colour banding</td>
+              <td>Only when a hard size limit forces it</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p>
+        Photographs tolerate compression well. Screenshots, logos, diagrams and anything
+        containing text do not — JPEG puts faint halos around sharp edges, which is very visible
+        on lettering. For those, use <a href="/compress-png/">PNG</a> or{' '}
+        <a href="/compress-webp/">WebP</a> instead.
+      </p>
+    </section>
+
+    <section class="section">
+      <h2 id="target-size">Compressing to an exact file size</h2>
+      <p>
+        Real limits are stated in megabytes. YouTube rejects mobile thumbnail uploads over 2 MB.
+        Contact forms cap attachments at 5 MB. A marketplace wants images under 1 MB. None of
+        these translate into a quality number, which is why most compressors leave you dragging a
+        slider and re-checking the file size by hand.
+      </p>
+      <p>
+        Switch this tool to <strong>By target size</strong> and type the limit. It repeatedly
+        encodes the image at different quality settings, narrowing in on the highest quality that
+        still fits underneath your number, and normally settles it in six to eight attempts. If
+        the target genuinely cannot be met without destroying the image, it says so rather than
+        handing you something unusable.
+      </p>
+      <p>
+        When a target is out of reach, the fix is almost always dimensions rather than quality.
+        File size scales with the number of pixels, so halving the width and the height leaves
+        roughly a quarter of the file. <a href="/resize-image/">Resize the image</a> first, then
+        compress.
+      </p>
+    </section>
+
+    <section class="section">
+      <h2 id="orientation">Photos from phones stay the right way up</h2>
+      <p>
+        Phone cameras rarely rotate the pixels they capture. Instead they store the image as the
+        sensor saw it and add an orientation tag saying which way up it should be displayed.
+        Tools that ignore that tag hand back a sideways photo — a common and baffling result when
+        compressing images straight from a phone.
+      </p>
+      <p>
+        This tool reads the orientation and bakes the correct rotation into the output, so what
+        you download is upright everywhere, including in software that ignores the tag.
+      </p>
+    </section>
+  </Fragment>
+</ToolPage>

@@ -1,0 +1,132 @@
+---
+import Base from '../layouts/Base.astro';
+import AdSlot from '../components/AdSlot.astro';
+import { SITE } from '../config';
+import { CATEGORIES, TOOLS, toolsInCategory } from '../data/tools';
+import { organizationSchema, websiteSchema } from '../lib/schema';
+import { getCollection } from 'astro:content';
+
+const guides = (await getCollection('guides')).sort(
+  (a, b) => a.data.order - b.data.order,
+);
+---
+
+<Base
+  title={`${SITE.name} – ${SITE.tagline}`}
+  description={SITE.description}
+  path="/"
+  schema={[websiteSchema(), organizationSchema()]}
+>
+  <header class="page-head" style="max-width: 46ch">
+    <h1>Image tools that never upload your files</h1>
+    <p class="page-head__blurb">
+      {TOOLS.length} free tools for compressing, converting, resizing and cleaning up images for Etsy,
+      Amazon, YouTube and Instagram. Everything runs inside your browser — no upload, no account,
+      no queue.
+    </p>
+  </header>
+
+  <div class="home-points">
+    <div class="home-point">
+      <h2>Nothing leaves your device</h2>
+      <p>
+        Processing happens in your browser using WebAssembly. Load a tool, turn off your internet
+        connection, and it still works — which is the only proof of a privacy claim worth having.
+      </p>
+    </div>
+    <div class="home-point">
+      <h2>Aim at a file size, not a slider</h2>
+      <p>
+        Real limits are stated in megabytes. Type "under 2 MB" and the compressors search for the
+        highest quality that fits, instead of leaving you to guess and re-check.
+      </p>
+    </div>
+    <div class="home-point">
+      <h2>Metadata edits stay lossless</h2>
+      <p>
+        Removing EXIF or changing DPI rewrites a few bytes of the container and never re-encodes
+        the picture. The pixels that come out are identical to the ones that went in.
+      </p>
+    </div>
+    <div class="home-point">
+      <h2>Photos stay the right way up</h2>
+      <p>
+        Phone cameras store orientation as a tag rather than rotating pixels. Every tool here
+        reads it, so nothing comes back sideways.
+      </p>
+    </div>
+  </div>
+
+  {
+    CATEGORIES.map((category) => (
+      <section class="section section--wide" style="margin-top: var(--space-8)">
+        <h2 id={category.slug}>
+          <a href={`/${category.slug}/`} style="text-decoration: none; color: inherit">
+            {category.name}
+          </a>
+        </h2>
+        <p class="text-muted" style="margin-bottom: var(--space-5); max-width: var(--measure)">
+          {category.blurb}
+        </p>
+        <ul class="tool-grid">
+          {toolsInCategory(category.id).map((tool) => (
+            <li>
+              <a class="tool-card" href={`/${tool.slug}/`}>
+                <span class="tool-card__name">{tool.name}</span>
+                <span class="tool-card__desc">{tool.blurb.split('.')[0]}.</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </section>
+    ))
+  }
+
+  <AdSlot placement="belowContent" variant="leaderboard" />
+
+  {
+    guides.length > 0 && (
+      <section class="section section--wide" style="margin-top: var(--space-9)">
+        <h2>Guides</h2>
+        <p class="text-muted" style="margin-bottom: var(--space-5); max-width: var(--measure)">
+          What each platform actually asks for, and why images get rejected.
+        </p>
+        <ul class="tool-grid">
+          {guides.slice(0, 6).map((guide) => (
+            <li>
+              <a class="tool-card" href={`/guides/${guide.id}/`}>
+                <span class="tool-card__name">{guide.data.h1}</span>
+                <span class="tool-card__desc">{guide.data.blurb}</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+        <p style="margin-top: var(--space-5)">
+          <a href="/guides/">All guides</a>
+        </p>
+      </section>
+    )
+  }
+</Base>
+
+<style>
+  .home-points {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: var(--space-5);
+    padding: var(--space-6) 0;
+    border-block: 1px solid var(--border);
+  }
+
+  .home-point h2 {
+    font-size: var(--step-0);
+    font-weight: 650;
+    margin-bottom: var(--space-2);
+  }
+
+  .home-point p {
+    font-size: var(--step--1);
+    color: var(--text-muted);
+    line-height: 1.6;
+  }
+</style>

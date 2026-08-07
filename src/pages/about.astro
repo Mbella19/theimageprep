@@ -1,0 +1,99 @@
+---
+import Page from '../layouts/Page.astro';
+import { SITE } from '../config';
+import { TOOLS } from '../data/tools';
+---
+
+<Page
+  title="About"
+  description="Why these image tools exist, how they work without uploading anything, and what makes them different from the alternatives."
+  h1={`About ${SITE.name}`}
+  path="/about/"
+  blurb="Image tools built for people who publish: sellers listing products, creators making thumbnails, and anyone who has been told their file is the wrong size."
+>
+  <h2>The problem this solves</h2>
+  <p>
+    Publishing anything online means meeting somebody's image specification. Etsy wants 2000
+    pixels on the shortest side. Amazon wants a pure white background and 1600 pixels. YouTube
+    caps mobile thumbnail uploads at 2 MB. A printer wants 300 DPI. Each of these is a small,
+    annoying, entirely solvable problem, and the existing free tools for solving them are mostly
+    unpleasant: they upload your files to a server you know nothing about, wrap the result in
+    advertising, demand an account for a thirty-second task, or quietly do the job badly.
+  </p>
+
+  <h2>How these tools work</h2>
+  <p>
+    Everything here runs inside your browser. Modern browsers can decode, transform and re-encode
+    images entirely on your own machine, using the same compression libraries that desktop
+    software uses, compiled to WebAssembly. There is no upload step because there is no server
+    doing the work.
+  </p>
+  <p>
+    That has three consequences worth spelling out. Your files stay private, because they never
+    travel. There is no queue, because you are not sharing a server with anyone. And there is no
+    file size limit imposed by an upload form — the only limit is your own device's memory.
+  </p>
+
+  <h2>What is done differently here</h2>
+
+  <h3>You can aim at a file size, not just a quality slider</h3>
+  <p>
+    Most free compressors give you a quality slider and leave you to guess. But real requirements
+    are stated in megabytes, not quality units. The compressors here let you name the size you
+    need and search for the highest quality that fits underneath it. See the{' '}
+    <a href="/compress-jpg/">JPG compressor</a> for the clearest example.
+  </p>
+
+  <h3>Metadata editing does not re-compress your image</h3>
+  <p>
+    Removing EXIF data or changing DPI does not require touching a single pixel — it only
+    requires rewriting a small block of the file. Most tools decode and re-save the whole image
+    anyway, which throws away quality for no reason. The{' '}
+    <a href="/remove-exif-data/">EXIF remover</a> and the{' '}
+    <a href="/change-image-dpi/">DPI tool</a> operate on the file structure directly, so the
+    image that comes out is pixel-for-pixel identical to the one that went in.
+  </p>
+
+  <h3>DPI changes that actually stick</h3>
+  <p>
+    A JPEG can record its resolution in two different places, and most online tools write only
+    one of them. Photoshop and Word read the other one, see the old value, and appear to ignore
+    the change entirely. This is the single most common complaint about DPI tools, and it is a
+    bug rather than a mystery. Ours writes both.
+  </p>
+
+  <h3>Photos do not come out sideways</h3>
+  <p>
+    Phone cameras record orientation as a tag rather than rotating the stored pixels. Tools that
+    ignore the tag output rotated images. Every tool here reads it and applies the rotation
+    properly.
+  </p>
+
+  <h3>Limits are stated, not hidden</h3>
+  <p>
+    Every tool page has a section describing what it cannot do. Lossless PNG compression saves
+    10 to 30 percent, not the 70 percent some sites advertise while quietly performing colour
+    reduction. Enlarging an image cannot invent detail. A watermark is a deterrent, not
+    protection. Knowing the boundary before you start saves more time than an optimistic claim.
+  </p>
+
+  <h2>What is here</h2>
+  <p>
+    {TOOLS.length} tools at the moment, covering compression, format conversion, resizing and
+    cropping, metadata, and generating icon and social image sets. Alongside them are{' '}
+    <a href="/guides/">guides</a> covering the specifications each platform actually asks for.
+  </p>
+
+  <h2>Costs and advertising</h2>
+  <p>
+    Because the processing happens on your device, running this site costs almost nothing, which
+    is why the tools can stay free with no account and no upsell. Advertising may appear to
+    cover hosting. Where it does, it is kept away from the buttons you are trying to click.
+  </p>
+
+  <h2>Corrections</h2>
+  <p>
+    Platform specifications go out of date, and a tool can be wrong. If something here is
+    inaccurate, <a href="/contact/">say so</a> — corrections are welcome and get made.
+  </p>
+</Page>

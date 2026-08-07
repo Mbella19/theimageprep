@@ -1,0 +1,61 @@
+---
+/** Narrow prose layout for About, Contact, Privacy, Terms and the 404. */
+import Base from './Base.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import { breadcrumbSchema, type Crumb } from '../lib/schema';
+
+export interface Props {
+  title: string;
+  description: string;
+  h1: string;
+  path: string;
+  blurb?: string;
+  noindex?: boolean;
+  showBreadcrumbs?: boolean;
+  updated?: string;
+}
+
+const {
+  title,
+  description,
+  h1,
+  path,
+  blurb,
+  noindex = false,
+  showBreadcrumbs = true,
+  updated,
+} = Astro.props;
+
+const crumbs: Crumb[] = [
+  { name: 'Home', path: '/' },
+  { name: h1, path },
+];
+---
+
+<Base
+  title={title}
+  description={description}
+  path={path}
+  noindex={noindex}
+  schema={noindex ? undefined : breadcrumbSchema(crumbs)}
+>
+  <div class="container-narrow" style="padding-inline: 0">
+    {showBreadcrumbs && <Breadcrumbs crumbs={crumbs} />}
+
+    <header class="page-head">
+      <h1>{h1}</h1>
+      {blurb && <p class="page-head__blurb">{blurb}</p>}
+      {
+        updated && (
+          <p class="text-sm text-muted" style="margin-top: var(--space-4)">
+            Last updated: <time datetime={updated}>{updated}</time>
+          </p>
+        )
+      }
+    </header>
+
+    <div class="prose">
+      <slot />
+    </div>
+  </div>
+</Base>

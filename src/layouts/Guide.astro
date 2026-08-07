@@ -1,0 +1,85 @@
+---
+import Base from './Base.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import AdSlot from '../components/AdSlot.astro';
+import { getTool } from '../data/tools';
+import { articleSchema, breadcrumbSchema, type Crumb } from '../lib/schema';
+
+export interface Props {
+  title: string;
+  description: string;
+  h1: string;
+  blurb: string;
+  slug: string;
+  published: string;
+  updated?: string;
+  relatedTools: string[];
+}
+
+const { title, description, h1, blurb, slug, published, updated, relatedTools } = Astro.props;
+const path = `/guides/${slug}/`;
+
+const crumbs: Crumb[] = [
+  { name: 'Home', path: '/' },
+  { name: 'Guides', path: '/guides/' },
+  { name: h1, path },
+];
+
+const tools = relatedTools.map(getTool);
+---
+
+<Base
+  title={title}
+  description={description}
+  path={path}
+  type="article"
+  publishedTime={published}
+  modifiedTime={updated ?? published}
+  schema={[
+    articleSchema({ headline: h1, description, path, published, updated }),
+    breadcrumbSchema(crumbs),
+  ]}
+>
+  <div class="container-narrow" style="padding-inline: 0">
+    <Breadcrumbs crumbs={crumbs} />
+
+    <header class="page-head">
+      <p class="eyebrow">Guide</p>
+      <h1>{h1}</h1>
+      <p class="page-head__blurb">{blurb}</p>
+      <p class="text-sm text-muted" style="margin-top: var(--space-4)">
+        {
+          updated && updated !== published ? (
+            <>Updated <time datetime={updated}>{updated}</time></>
+          ) : (
+            <>Published <time datetime={published}>{published}</time></>
+          )
+        }
+      </p>
+    </header>
+
+    <div class="prose">
+      <slot />
+    </div>
+
+    <AdSlot placement="inArticle" />
+
+    {
+      tools.length > 0 && (
+        <section class="related">
+          <h2>Tools mentioned in this guide</h2>
+          <ul class="tool-grid">
+            {tools.map((tool) => (
+              <li>
+                <a class="tool-card" href={`/${tool.slug}/`}>
+                  <span class="tool-card__name">{tool.name}</span>
+                  <span class="tool-card__desc">{tool.blurb.split('.')[0]}.</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )
+    }
+  </div>
+</Base>
