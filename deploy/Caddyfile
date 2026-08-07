@@ -46,9 +46,19 @@
 	@immutable path /_astro/*
 	header @immutable Cache-Control "public, max-age=31536000, immutable"
 
-	# Icons are stable but NOT content-hashed, so a year would strand them.
-	@icons path /favicon.ico /favicon.svg /apple-touch-icon.png /android-chrome-*.png /favicon-*.png
-	header @icons Cache-Control "public, max-age=86400"
+	# Self-hosted fonts. Bytes never change for a given filename — but there is
+	# no content hash in the path, so RENAME the file if you ever swap it.
+	@fonts path /fonts/*
+	header @fonts Cache-Control "public, max-age=31536000, immutable"
+
+	# Brand assets are generated and their paths carry no content hash, so a
+	# long cache strands the old mark after a rebrand — which happened once on
+	# the Cloudflare side with max-age=86400: the new favicon deployed fine and
+	# the CDN served the old one all day, exactly as instructed. Revalidating
+	# keeps them cached but makes a change appear immediately, at the cost of a
+	# ~100-byte 304 on files that are tiny and rarely re-fetched.
+	@brand path /favicon.ico /favicon.svg /apple-touch-icon.png /android-chrome-*.png /favicon-*.png /og/*
+	header @brand Cache-Control "public, max-age=0, must-revalidate"
 
 	# HTML must revalidate, or a redeploy stays invisible to returning visitors
 	# until their cache expires. This is the most common static-hosting mistake

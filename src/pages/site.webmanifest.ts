@@ -1,5 +1,6 @@
 import type { APIRoute } from 'astro';
 import { SITE } from '../config';
+import { versioned } from '../lib/assetVersion';
 
 /** Generated so the brand name follows src/config.ts like everything else. */
 export const GET: APIRoute = () => {
@@ -12,10 +13,10 @@ export const GET: APIRoute = () => {
     background_color: '#f2f0ec',
     theme_color: '#f2f0ec',
     icons: [
-      { src: '/android-chrome-192x192.png', sizes: '192x192', type: 'image/png' },
-      { src: '/android-chrome-512x512.png', sizes: '512x512', type: 'image/png' },
+      { src: versioned('/android-chrome-192x192.png'), sizes: '192x192', type: 'image/png' },
+      { src: versioned('/android-chrome-512x512.png'), sizes: '512x512', type: 'image/png' },
       {
-        src: '/android-chrome-512x512.png',
+        src: versioned('/android-chrome-512x512.png'),
         sizes: '512x512',
         type: 'image/png',
         purpose: 'maskable',

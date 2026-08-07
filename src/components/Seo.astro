@@ -7,6 +7,7 @@
  * failure mode of hand-written HTML across dozens of pages.
  */
 import { SITE, absoluteUrl } from '../config';
+import { versioned } from '../lib/assetVersion';
 
 export interface Props {
   title: string;
@@ -33,7 +34,16 @@ const {
 } = Astro.props;
 
 const canonical = absoluteUrl(path);
-const imageUrl = absoluteUrl(ogImage);
+
+/*
+  The OG card is versioned too. Social platforms cache these far longer than a
+  browser does — some effectively forever — so a rebrand would otherwise keep
+  showing the old card in shared links indefinitely.
+
+  The canonical URL above is deliberately NOT versioned: that is the page's
+  identity for search, and a query string on it would be a different URL.
+*/
+const imageUrl = absoluteUrl(versioned(ogImage));
 ---
 
 <meta charset="utf-8" />
@@ -65,10 +75,15 @@ const imageUrl = absoluteUrl(ogImage);
 <meta name="twitter:description" content={description} />
 <meta name="twitter:image" content={imageUrl} />
 
-{/* Icons */}
-<link rel="icon" href="/favicon.ico" sizes="32x32" />
-<link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+{/*
+  Icons. Versioned with a hash of the favicon's own bytes — see
+  src/lib/assetVersion.ts. These paths are fixed by convention and carry no
+  content hash, so without this a cached copy of an old logo has no way to
+  learn a new one exists.
+*/}
+<link rel="icon" href={versioned('/favicon.ico')} sizes="32x32" />
+<link rel="icon" href={versioned('/favicon.svg')} type="image/svg+xml" />
+<link rel="apple-touch-icon" href={versioned('/apple-touch-icon.png')} />
 <link rel="manifest" href="/site.webmanifest" />
 {/* One value, no media split: the site is light-only, so a dark variant
     would paint the browser chrome a colour that appears nowhere on the

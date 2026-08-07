@@ -178,6 +178,13 @@ for (const file of files) {
     } else if (!ref.startsWith('/')) {
       continue;
     }
+    /*
+      Strip the cache-busting query string. Brand assets ship as
+      `/favicon.svg?v=a1b2c3d4` (see src/lib/assetVersion.ts) and the file on
+      disk is of course just `/favicon.svg` — without this the audit reports
+      every icon on the site as missing.
+    */
+    assetPath = assetPath.split('?')[0].split('#')[0];
     if (!existsSync(join(dist, assetPath))) {
       missingAssets.set(assetPath, (missingAssets.get(assetPath) ?? 0) + 1);
     }

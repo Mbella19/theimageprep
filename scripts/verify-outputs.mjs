@@ -670,7 +670,15 @@ const scenarios = {
       'photo-plain.jpg',
       'photo-rotated.jpg',
     ]);
-    await page.waitForSelector('.results__footer', { timeout: 120_000 });
+    /*
+      The only multi-file scenario, so the only one that has to wait on three
+      full encodes through the worker pool. 120s was enough standalone but
+      timed out inside `verify:all`, where this runs after the unit tests, a
+      build and the whole browser suite have already saturated the machine.
+      Failing one run in three trains you to ignore the suite, which is worse
+      than not having it.
+    */
+    await page.waitForSelector('.results__footer', { timeout: 300_000 });
     const rows = await page.$$eval('.result-row', (n) => n.length);
     check('BATCH: all three files processed', rows === 3, `${rows} rows`);
 
