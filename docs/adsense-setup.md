@@ -3,22 +3,62 @@
 Ads are **off**. Nothing renders and no Google script loads until you enable them, so
 the site launches clean.
 
-## Do not apply yet
+## You already have an approved account
 
-Apply once the site has been live for a few weeks with real content and a little
-traffic. Applying on day one with a brand-new domain is the most common way to get
-rejected, and a rejection is a slower path than waiting.
+This matters, and it changes the advice. Adding a site to an **existing approved
+AdSense account** is a different, much lower bar than a first application: Google
+reviews the site against its policies, not you as a publisher. There is no
+account-level risk in adding a site that gets declined — you fix the reason and
+request another review.
 
-Before applying, you want:
+The site already satisfies AdSense's structural requirements: original content
+across 35 pages, plain-HTML navigation, a working contact route, a privacy
+policy and terms.
 
-- The site live on a real custom domain with HTTPS.
-- All 14 tools working, tested on a phone.
-- The 8 guides published, plus About, Contact, Privacy policy and Terms.
-- Verified in Search Console, with the sitemap submitted and pages indexed.
-- Some organic traffic, however small.
+The one genuine risk is **age**. Reviewers can see a domain registered days ago
+with no indexed pages and no traffic, and "low value content" is the catch-all
+they reach for. That is not a statement about your content — it is about the
+site looking unestablished.
 
-The site already satisfies AdSense's structural requirements: original content, clear
-navigation, a working contact route, and a privacy policy.
+**Recommendation:** add the site and get the verification code live now, but
+wait until Search Console shows pages actually indexed before requesting the
+review. That is usually one to three weeks. The verification code sitting on the
+site during that window does nothing visible and costs nothing.
+
+If you would rather move now, the downside is bounded: a decline, a fix, and a
+re-request.
+
+## The three stages
+
+Ads are off by default and the code has three distinct states, which is what
+lets you get verified long before any ad renders:
+
+| `enabled` | `client` | `slots` | What happens |
+|---|---|---|---|
+| `false` | — | — | No Google script at all. The launch state. |
+| `true` | set | **empty** | Loader script only. **This is what site review needs.** No ad renders anywhere. |
+| `true` | set | filled | Ads render in the reserved placements. |
+
+Stage 2 is the important one: `AdSlot` requires a slot ID before it renders
+anything, so a publisher ID with empty `slots` puts the verification tag on
+every page while the site stays completely ad-free.
+
+## ads.txt
+
+Generated automatically at `/ads.txt` from your publisher ID — see
+[`src/pages/ads.txt.ts`](../src/pages/ads.txt.ts). Nothing to maintain.
+
+It is not optional. Without it AdSense shows a standing "Earnings at risk"
+warning, and some buyers skip unauthorised inventory. An ads.txt that exists but
+omits your ID is *worse* than none, because the file is treated as exhaustive —
+which is exactly why it is derived from `src/config.ts` rather than hand-written.
+
+Check it after deploying:
+
+```bash
+curl -s https://theimageprep.com/ads.txt
+# google.com, pub-…, DIRECT, f08c47fec0942fa0
+```
 
 ## Turning ads on
 
