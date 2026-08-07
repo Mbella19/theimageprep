@@ -39,14 +39,24 @@ export const SITE = {
   language: 'en-GB',
 
   /**
-   * AdSense stays OFF until the site has content and has been approved.
-   * Flip `enabled` to true and paste your publisher ID to switch every ad
-   * slot on at once. See docs/adsense-setup.md.
+   * AdSense. Three stages, and this is currently at stage 2 — see
+   * docs/adsense-setup.md.
+   *
+   *   1. enabled:false                  no Google script at all
+   *   2. enabled:true, slots empty      loader script only, ZERO ads render
+   *   3. enabled:true, slots filled     ads live
+   *
+   * Stage 2 is what site review needs: the verification tag has to be on the
+   * page for Google to find it, but `AdSlot` refuses to render without a slot
+   * ID, so the site stays completely ad-free while under review.
+   *
+   * Do not fill in `slots` until the site is approved AND the consent platform
+   * is configured for EEA/UK/Swiss visitors.
    */
   adsense: {
-    enabled: false,
-    /** e.g. 'ca-pub-1234567890123456' */
-    client: '',
+    enabled: true,
+    /** Publisher ID. Also generates /ads.txt — see src/pages/ads.txt.ts. */
+    client: 'ca-pub-5145566567335944',
     /** Per-placement slot IDs, created in the AdSense dashboard. */
     slots: {
       inArticle: '',
